@@ -75,6 +75,10 @@ Changes in ATK 7.0 (WIP)
     minute or second is rounded to the nearest value in the sequence
     (see http://forum.achievo.org/viewtopic.php?f=2&t=22404 from
     agx / bad penguin / baiadomizia) [wayneh]
++ Added new attribute atkckeditorattribute which uses CKEditor
+    See ww.ckeditor.com for editor configuration details
+    This is a functional replacement for atkhtmlattribute which uses 
+	FCK editor the predecessor to CKEditor
 
 Changes in ATK 6.6.0
 --------------------
