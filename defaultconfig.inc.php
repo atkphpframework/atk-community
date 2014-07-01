@@ -818,6 +818,21 @@ $config_encryption_defaultmethod = "base64";
 $config_search_defaultmode = "substring";
 
 /**
+ * Wether or not to enable comparison searches
+ * @var boolean
+ * Enables comparison searching to searchable atkdateattribute, 
+ * atknumberattribute and atkcurrencyattribute attributes in admin
+ * list view. This enables use of > (greater than) or < (less than)
+ * as 1st character of value to search for.
+ * NOTE Dates in the m/d/y or d-m-y formats are disambiguated
+ * by looking at the separator between the various components:
+ * If the separator is a slash (/), then the American m/d/y
+ * is assumed; whereas if the separator is a dash (-) or
+ * a dot (.), then the European d-m-y format is assumed.
+ */
+$config_comparison_search = false;
+
+/**
  * Wether or not to enable Internet Explorer extensions
  * @var boolean
  * @todo update this bit of documentation as it doesn't really say much
@@ -996,8 +1011,9 @@ $config_lose_changes_warning = false;
  * Directories that contains modules (needed for testcases)
  */
 //  $config_module_dirs = array("/modules");
-// --------- FCK Image Upload Option ---------
 
+
+// --------- FCK Image Upload Option ---------
 $config_fck_filemanager_enabled = false;
 $config_fck_upload_path = '../atktmp/';
 

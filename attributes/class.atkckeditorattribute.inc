@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
@@ -11,7 +10,7 @@
  *
  * $Id: class.atkckeditorattribute.inc 2014-04-27 wayneh$
  *
- *
+ * Adapted from -
  * @2010 by Antonio Gallo "AGX" - http://www.badpenguin.org/
  * License: GPL
  * Version: 2
@@ -22,58 +21,58 @@
  */
 
 /**
- * This attribute is a functional replacement for atkhtmlattribute
+ * This attribute is a functional replacement for atkfckattribute
  * which uses FCK editor (the predecessor to CKeditor)
  * Originally configured with CKEditor 4.4.0 April 2014
  * See www.ckeditor.com
  */
-class atkCKEditorAttribute extends atkTextAttribute
-{
+class atkCKEditorAttribute extends atkTextAttribute {
 
-    /**
-     * Tool bar to use from config.js.
-     * In standard config.js atkstd,atklite & atkmin
-     * toolbars are defined
-     * @param string $toolbar
-     */
-    private $toolbar = 'atkstd';
-
-    /**
-     * Sets the tool bar to use from config.js.
-     *
-     * @param string $tb
-     */
-    function setToolBar($tb)
-    {
-        $this -> toolbar = $tb;
-    }
+    private $ckeditor_options = array();
 
     /**
      * Constructor
      * @param string $name Name of the attribute
      * @param int $flags Flags of the attribute
+     * @options array of CKEditor option strings
+     * eg $options = array("uiColor : '#9AB8F3'",
+     *                  "toolbar : ''",
+     *                  "width : 800",
+     *                  "height : 1000"); etc etc
+     * NB option "toolbar : ''" displays FULL CKEditor toolbar
+     * Supplied config.js contains tools bars 'atk', 'atklite and 'atkmin'
+     * Select one of these as required eg "toolbar : atklite"
+     *
+     * (See http://docs.ckeditor.com/#!/api/CKEDITOR.config for
+     * all options)
      */
-    function atkCKeditorAttribute($name, $flags = 0)
+    function atkCKeditorAttribute($name, $flags = 0, $options = array())
     {
+        $this->ckeditor_options = implode(",", $options);
+
         // better to keep size empty to avoid compatibility problems with text areas
         $size = NULL;
-        $this -> atkTextAttribute($name, $size, $flags);
+        $this->atkTextAttribute($name, $size, $flags);
     }
 
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
         $page = &atkinstance("atk.ui.atkpage");
-        $page -> register_script(atkconfig("atkroot")
-          . "atk/attributes/ckeditor/ckeditor.js");
+        $page->register_script(atkconfig("atkroot")
+                . "atk/attributes/ckeditor/ckeditor.js");
 
         $result = parent::edit($record, $fieldprefix, $mode);
 
         // activate
-        $iname = $this -> gethtmlid($fieldprefix);
+        $iname = $this->gethtmlid($fieldprefix);
         $result .= "<script type='text/javascript'>CKEDITOR.replace( '"
-          . $iname . "',{toolbar : '" . $this -> toolbar
-          . "', uiColor : '#9AB8F3'});</script>";
+                . $iname . "',{" . $this->ckeditor_options . "});</script>";
         return $result;
+    }
+
+    function display($record = "", $mode = "")
+    {
+        return atkArrayNvl($record, $this->fieldName(), "");
     }
 
 }

@@ -39,7 +39,7 @@ Changes in ATK 7.0 (WIP)
   dropdown. [Patrick]
 * In atkEmailAttribute, modified address validation to allow single character
   subdomains. [Patrick]
-  + Added optional password restriction settings to defaultconfig.inc.php [wayneh]
++ Added optional password restriction settings to defaultconfig.inc.php [wayneh]
 * Applied dependencies fix (See https://github.com/atkphpframework/atk/issues/3
   and http://forum.achievo.org/viewtopic.php?f=2&t=20722&hilit=adddependency+removes)
   to atkattribute, atkboolattribute, atkdateattribute, atkfileattribute,
@@ -67,18 +67,39 @@ Changes in ATK 7.0 (WIP)
 + Added option to configure records per page dropdown options and
     documented in defaultconfig.inc.php - eg
       $config_recordsperpage_options = array(15,25,50,100,500); [wayneh]
++ Added new attribute atkdatetime2attribute where the constructor can
+  contain an array of atkdateattribute arguments and an array of 
+  atktimeattribute arguments
+  (http://forum.achievo.org/viewtopic.php?f=2&t=22404&hilit=atkdatetimeattribute
+  from agx / bad penguin / baiadomizia) [wayneh]
 + Added flag AF_CLEAR_TOUCH_BUTTONS to atktimeattribute,
-    atkdateattribute,atkdatetimeattribute. Causes 2 buttons to be
-    display to the right of the date and/or time. 1st button (clear)
-    clears the field and 2nd button (touch) sets date and/or time to
-    current date/time. If minutes or seconds range other than 0-59
-    minute or second is rounded to the nearest value in the sequence
+    atkdateattribute,atkdatetimeattribute and atkdatetime2attribute.
+	Causes 2 buttons to be displayed to the right of the date and/or time.
+	1st button (clear) clears the field
+	2nd button (touch) sets date and/or time current date/time. 
+	If minutes or seconds range other than 0-59 minute or second is
+	rounded to the nearest value in the sequence
     (see http://forum.achievo.org/viewtopic.php?f=2&t=22404 from
     agx / bad penguin / baiadomizia) [wayneh]
 + Added new attribute atkckeditorattribute which uses CKEditor
-    See ww.ckeditor.com for editor configuration details
-    This is a functional replacement for atkhtmlattribute which uses 
+	Constructor parameters contain an array of required CKEditor options
+	eg $options = array("uiColor : '#9AB8F3'",
+                       "toolbar : ''",
+                       "width : 800",
+                       "height : 1000"); etc etc
+    See www.ckeditor.com for editor configuration details
+    This is a functional replacement for atkfckattribute which uses 
 	FCK editor the predecessor to CKEditor
++   Added comparison searching to searchable atkdateattribute, 
+    atknumberattribute and atkcurrencyattribute attributes in admin
+	list view. This enables use of > (greater than) or < (less than)
+	as 1st character of value to search for
+	Enabled by $config_comparison_search = true in config.inc.php file
+	NOTE Dates in the m/d/y or d-m-y formats are disambiguated
+    by looking at the separator between the various components:
+    If the separator is a slash (/), then the American m/d/y
+    is assumed; whereas if the separator is a dash (-) or
+    a dot (.), then the European d-m-y format is assumed.    
 
 Changes in ATK 6.6.0
 --------------------
