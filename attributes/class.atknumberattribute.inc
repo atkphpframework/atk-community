@@ -23,8 +23,8 @@
  * @subpackage attributes
  *
  */
-class atkNumberAttribute extends atkAttribute
-{
+class atkNumberAttribute extends atkAttribute {
+
     var $m_size; // Integral part of number (before decimal separator)
     var $m_decimals = null; // The number of decimals of the number.
     var $m_minvalue = false; // The minimum value of the number.
@@ -64,7 +64,7 @@ class atkNumberAttribute extends atkAttribute
      */
     public function getDecimals()
     {
-        return (int) $this->m_decimals;
+        return (int)$this->m_decimals;
     }
 
     /**
@@ -102,24 +102,27 @@ class atkNumberAttribute extends atkAttribute
      */
     function getOrderByStatement($extra = '', $table = '', $direction = 'ASC')
     {
-        if (empty($table)) {
+        if (empty($table))
+        {
             $table = $this->m_ownerInstance->m_table;
         }
 
         // check for a schema name in $table
-        if (strpos($table, '.') !== false) {
+        if (strpos($table, '.') !== false)
+        {
             $identifiers = explode('.', $table);
 
             $tableIdentifier = '';
-            foreach ($identifiers as $identifier) {
+            foreach ($identifiers as $identifier)
+            {
                 $tableIdentifier .= $this->getDb()->quoteIdentifier($identifier) . '.';
             }
 
-            return $tableIdentifier . $this->getDb()->quoteIdentifier($this->fieldName()) . ($direction
-                        ? " {$direction}" : "");
-        } else {
-            return $this->getDb()->quoteIdentifier($table) . "." . $this->getDb()->quoteIdentifier($this->fieldName()) . ($direction
-                        ? " {$direction}" : "");
+            return $tableIdentifier . $this->getDb()->quoteIdentifier($this->fieldName()) . ($direction ? " {$direction}" : "");
+        }
+        else
+        {
+            return $this->getDb()->quoteIdentifier($table) . "." . $this->getDb()->quoteIdentifier($this->fieldName()) . ($direction ? " {$direction}" : "");
         }
     }
 
@@ -139,7 +142,8 @@ class atkNumberAttribute extends atkAttribute
      */
     function display($record, $mode = "")
     {
-        if (isset($record[$this->fieldName()]) && $record[$this->fieldName()] !== "") {
+        if (isset($record[$this->fieldName()]) && $record[$this->fieldName()] !== "")
+        {
             return $this->formatNumber($record[$this->fieldName()]);
         }
         return "";
@@ -177,12 +181,14 @@ class atkNumberAttribute extends atkAttribute
         // the next if-statement is a workaround for derived attributes which do
         // not override the hide() method properly. This will not give them a
         // working hide() functionality but at least it will not give error messages.
-        if (!is_array($record[$this->fieldName()])) {
+        if (!is_array($record[$this->fieldName()]))
+        {
             $id = $id = $this->getHtmlId($fieldprefix);
             $result = '<input type="hidden" id="' . $id . '" name="' . $fieldprefix . $this->formName() . '" value="' . htmlspecialchars($this->formatNumber($record[$this->fieldName()])) . '">';
             return $result;
-        } else
-            atkdebug("Warning attribute " . $this->m_name . " has no proper hide method!");
+        }
+        else
+                atkdebug("Warning attribute " . $this->m_name . " has no proper hide method!");
     }
 
     /**
@@ -195,29 +201,34 @@ class atkNumberAttribute extends atkAttribute
     function removeSeparators($number, $decimal_separator = "", $thousands_separator = "")
     {
         if (empty($decimal_separator))
-            $decimal_separator = $this->m_decimalseparator;
+                $decimal_separator = $this->m_decimalseparator;
         if (empty($thousands_separator))
-            $thousands_separator = $this->m_thousandsseparator;
+                $thousands_separator = $this->m_thousandsseparator;
 
-        if ($decimal_separator == $thousands_separator) {
+        if ($decimal_separator == $thousands_separator)
+        {
             atkwarning('invalid thousandsseparator. identical to the decimal_separator');
             $thousands_separator = '';
         }
 
-        if (strstr($number, $decimal_separator) !== false) {
+        if (strstr($number, $decimal_separator) !== false)
+        {
             // check invalid input
             if (substr_count($number, $decimal_separator) > 2)
-                return $number;
+                    return $number;
 
             $number = str_replace($thousands_separator, '', $number);
             $number = str_replace($decimal_separator, self::DEFAULT_SEPARATOR, $number);
 
-            if (substr_count($number, self::DEFAULT_SEPARATOR) > 1) {
+            if (substr_count($number, self::DEFAULT_SEPARATOR) > 1)
+            {
                 $parts = explode(self::DEFAULT_SEPARATOR, $number);
                 $decimals = array_pop($parts);
                 $number = implode('', $parts) . self::DEFAULT_SEPARATOR . $decimals;
             }
-        } else {
+        }
+        else
+        {
             $number = str_replace($thousands_separator, '', $number);
         }
 
@@ -232,7 +243,7 @@ class atkNumberAttribute extends atkAttribute
      */
     public function setUseThousandsSeparator($use_separator)
     {
-        $this->m_use_thousands_separator = (bool) $use_separator;
+        $this->m_use_thousands_separator = (bool)$use_separator;
     }
 
     /**
@@ -297,14 +308,12 @@ class atkNumberAttribute extends atkAttribute
      */
     protected function formatNumber($number, $decimalSeparator = "", $thousandsSeparator = "")
     {
-        $decimalSeparator = $decimalSeparator == null ? $this->m_decimalseparator
-                : $decimalSeparator;
-        $thousandsSeparator = $thousandsSeparator == null ? $this->m_thousandsseparator
-                : $thousandsSeparator;
-        $thousandsSeparator = $this->m_use_thousands_separator ? $thousandsSeparator
-                : '';
+        $decimalSeparator = $decimalSeparator == null ? $this->m_decimalseparator : $decimalSeparator;
+        $thousandsSeparator = $thousandsSeparator == null ? $this->m_thousandsseparator : $thousandsSeparator;
+        $thousandsSeparator = $this->m_use_thousands_separator ? $thousandsSeparator : '';
 
-        if ($decimalSeparator == $thousandsSeparator) {
+        if ($decimalSeparator == $thousandsSeparator)
+        {
             atkwarning('invalid thousandsseparator. identical to the decimal_separator');
             $thousandsSeparator = '';
         }
@@ -312,7 +321,7 @@ class atkNumberAttribute extends atkAttribute
         // NOTE: we don't use number_format because this sometimes causes rounding issues
         //       if a float can not be properly represented (see http://nl.php.net/manual/en/function.number-format.php#93893)
 
-        $tmp1 = round((float) $number, $this->getDecimals());
+        $tmp1 = round((float)$number, $this->getDecimals());
         $tmp1 .= $this->getDecimals() > 0 && strpos($tmp1, '.') === false ? '.' : '';
         $tmp1 .= str_repeat('0', max($this->getDecimals() - strlen(substr($tmp1, strpos($tmp1, '.') + 1)), 0));
 
@@ -347,11 +356,11 @@ class atkNumberAttribute extends atkAttribute
     function validate(&$record, $mode)
     {
         if (!is_numeric($record[$this->fieldName()]) && $record[$this->fieldName()] != "")
-            triggerError($record, $this->fieldName(), 'error_notnumeric');
+                triggerError($record, $this->fieldName(), 'error_notnumeric');
         if (($this->m_maxvalue !== false) && ($record[$this->fieldName()] > $this->m_maxvalue))
-            triggerError($record, $this->fieldName(), 'above_maximum_value');
+                triggerError($record, $this->fieldName(), 'above_maximum_value');
         if (($this->m_minvalue !== false) && ($record[$this->fieldName()] < $this->m_minvalue))
-            triggerError($record, $this->fieldName(), 'below_minimum_value');
+                triggerError($record, $this->fieldName(), 'below_minimum_value');
     }
 
     /**
@@ -368,7 +377,8 @@ class atkNumberAttribute extends atkAttribute
      */
     function fetchValue($postvars)
     {
-        if ($this->isPosted($postvars)) {
+        if ($this->isPosted($postvars))
+        {
             return $this->removeSeparators(atkArrayNvl($postvars, $this->fieldName(), ""));
         }
     }
@@ -388,11 +398,11 @@ class atkNumberAttribute extends atkAttribute
     function value2db($rec)
     {
         if ((!isset($rec[$this->fieldName()]) || strlen($rec[$this->fieldName()]) == 0) && !$this->hasFlag(AF_OBLIGATORY))
-            return NULL;
+                return NULL;
         if ($this->getDecimals() > 0)
-            return round((float) $rec[$this->fieldName()], $this->getDecimals());
+                return round((float)$rec[$this->fieldName()], $this->getDecimals());
         else
-            return isset($rec[$this->fieldName()]) ? $rec[$this->fieldName()] : null;
+                return isset($rec[$this->fieldName()]) ? $rec[$this->fieldName()] : null;
     }
 
     /**
@@ -449,8 +459,7 @@ class atkNumberAttribute extends atkAttribute
      */
     function dbFieldSize()
     {
-        return $this->m_maxsize . ($this->getDecimals() > 0 ? "," . $this->getDecimals()
-                    : "");
+        return $this->m_maxsize . ($this->getDecimals() > 0 ? "," . $this->getDecimals() : "");
     }
 
     /**
@@ -463,25 +472,31 @@ class atkNumberAttribute extends atkAttribute
 
         parent::fetchMeta($metadata);
 
-        if (strpos($this->m_size, ',') !== false) {
+        if (strpos($this->m_size, ',') !== false)
+        {
             list($this->m_size, $decimals) = explode(',', $this->m_size);
 
-            if ($this->m_decimals === null) {
+            if ($this->m_decimals === null)
+            {
                 // no decimals explicitly set, so use the one we
                 // retrieved from the database
                 $this->m_decimals = $decimals;
-            } else {
+            }
+            else
+            {
                 // if the number of decimals are explicitly set, but the database
                 // simply can't handle it, we use the lowest value
                 $this->m_decimals = min($this->m_decimals, $decimals);
             }
         }
 
-        if ($this->m_searchsize > 0) {
+        if ($this->m_searchsize > 0)
+        {
             $this->m_searchsize = min($searchSize, $this->m_size + $this->m_decimals + 1, 20);
         }
 
-        if ($this->m_maxsize > 0) {
+        if ($this->m_maxsize > 0)
+        {
             $this->m_maxsize = min($maxSize, $this->m_size, 20);
         }
     }
@@ -498,10 +513,13 @@ class atkNumberAttribute extends atkAttribute
     function edit($record = "", $fieldprefix = "", $mode = "")
     {
         $id = $this->getHtmlId($fieldprefix);
-        if (count($this->m_onchangecode) || count($this->getDependencies())) {
+        if (count($this->m_onchangecode) || count($this->getDependencies()))
+        {
             $onchange = 'onChange="' . $id . '_onChange(this);"';
             $this->_renderChangeHandler($fieldprefix);
-        } else {
+        }
+        else
+        {
             $onchange = '';
         }
 
@@ -509,21 +527,22 @@ class atkNumberAttribute extends atkAttribute
 
         $size = $this->m_size;
         $maxsize = $this->m_maxsize;
-        if ($this->getDecimals() > 0) {
+        if ($this->getDecimals() > 0)
+        {
             $size += ($this->getDecimals() + 1);
             $maxsize += ($this->getDecimals() + 1); // make room for the number of decimals
         }
 
         $value = "";
         if (isset($record[$this->fieldName()]) && strlen($record[$this->fieldName()]) > 0)
-            $value = $this->formatNumber($record[$this->fieldName()]);
+                $value = $this->formatNumber($record[$this->fieldName()]);
 
         $id = $fieldprefix . $this->fieldName();
         $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN);
         $result = '<input type="text" id="' . $id . '" class="' . get_class($this) . '" name="' . $id .
-            '" value="' . $value . '"' .
-            ($size > 0 ? ' size="' . $size . '"' : '') .
-            ($maxsize > 0 ? ' maxlength="' . $maxsize . '"' : '') . ' ' . $onchange . ' />';
+                '" value="' . $value . '"' .
+                ($size > 0 ? ' size="' . $size . '"' : '') .
+                ($maxsize > 0 ? ' maxlength="' . $maxsize . '"' : '') . ' ' . $onchange . ' />';
 
         return $result;
     }
@@ -548,14 +567,19 @@ class atkNumberAttribute extends atkAttribute
     {
         $value = "";
         if (isset($record[$this->fieldName()]))
-            $value = $record[$this->fieldName()];
+                $value = $record[$this->fieldName()];
 
-        if (!$extended) {
-            if (is_array($value)) {
-                if ($value["from"] != "" || $value["to"] != "") {
+        if (!$extended)
+        {
+            if (is_array($value))
+            {
+                if ($value["from"] != "" || $value["to"] != "")
+                {
                     // Two values were entered in the extended search screen.
                     $value = $value["from"] . "/" . $value["to"];
-                } else {
+                }
+                else
+                {
                     $value = "";
                 }
             }
@@ -564,21 +588,20 @@ class atkNumberAttribute extends atkAttribute
 
             $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN);
             $result = '<input type="text" id="' . $id . '" class="' . get_class($this) . '" name="' . $id . '" value="' . atk_htmlentities($value) . '"' .
-                ($this->m_searchsize > 0 ? ' size="' . $this->m_searchsize . '"'
-                        : '') . '>';
+                    ($this->m_searchsize > 0 ? ' size="' . $this->m_searchsize . '"' : '') . '>';
             return $result;
-        } else {
+        }
+        else
+        {
             $id = $this->getSearchFieldName($fieldprefix) . '[from]';
             $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN);
             $result = '<input type="text" id="' . $id . '" class="' . get_class($this) . '" name="' . $id . '" value="' . atk_htmlentities($value) . '"' .
-                ($this->m_searchsize > 0 ? ' size="' . $this->m_searchsize . '"'
-                        : '') . '>';
+                    ($this->m_searchsize > 0 ? ' size="' . $this->m_searchsize . '"' : '') . '>';
 
             $id = $this->getSearchFieldName($fieldprefix) . '[to]';
             $this->registerKeyListener($id, KB_CTRLCURSOR | KB_UPDOWN);
             $result.= " (" . atktext("until") . ' <input type="text" id="' . $id . '" class="' . get_class($this) . '" name="' . $id . '" value="' . atk_htmlentities($value) . '"' .
-                ($this->m_searchsize > 0 ? ' size="' . $this->m_searchsize . '"'
-                        : '') . '>)';
+                    ($this->m_searchsize > 0 ? ' size="' . $this->m_searchsize . '"' : '') . '>)';
             return $result;
         }
     }
@@ -595,28 +618,38 @@ class atkNumberAttribute extends atkAttribute
     function processSearchValue($value, &$searchmode)
     {
         $processed = array();
-        if (!is_array($value)) {
+        if (!is_array($value))
+        {
             $slash = strpos($value, '/'); // Support for 'from/to' searches.
             $str = trim($value);
-            if ($slash !== false) {
+            if ($slash !== false)
+            {
                 $from = substr($str, 0, $slash);
                 $to = substr($str, $slash + 1);
 
-                if (!is_numeric($from) || !is_numeric($to)) {
+                if (!is_numeric($from) || !is_numeric($to))
+                {
                     return array();
                 }
 
                 $processed["from"] = $this->removeSeparators($from);
                 $processed["to"] = $this->removeSeparators($to);
                 $searchmode = 'between';
-            } else if (is_numeric($str)) {
-                $processed["from"] = (float) $this->removeSeparators($str); // quicksearch doesn't use an array.
-            } else {
+            }
+            else if (is_numeric($str))
+            {
+                $processed["from"] = (float)$this->removeSeparators($str); // quicksearch doesn't use an array.
+            }
+            else
+            {
                 return array();
             }
-        } else {
+        }
+        else
+        {
             // assumes array('from'=><intval>, 'to'=><intval>)
-            foreach ($value as $key => $search) {
+            foreach ($value as $key => $search)
+            {
                 $processed[$key] = $this->removeSeparators($search);
             }
         }
@@ -636,17 +669,23 @@ class atkNumberAttribute extends atkAttribute
     {
         $searchcondition = "";
 
-        if ($value["from"] != "" && $value["to"] != "") {
-            if ($value["from"] > $value["to"]) {
+        if ($value["from"] != "" && $value["to"] != "")
+        {
+            if ($value["from"] > $value["to"])
+            {
                 // User entered fields in wrong order. Let's fix that.
                 $tmp = $value["from"];
                 $value["from"] = $value["to"];
                 $value["to"] = $tmp;
             }
             return $query->betweenCondition($fieldname, $this->escapeSQL($value["from"]), $this->escapeSQL($value["to"]));
-        } else if ($value["from"] != "" && $value["to"] == "") {
+        }
+        else if ($value["from"] != "" && $value["to"] == "")
+        {
             return $query->greaterthanequalCondition($fieldname, $value["from"]);
-        } else if ($value["from"] == "" && $value["to"] != "") {
+        }
+        else if ($value["from"] == "" && $value["to"] != "")
+        {
             return $query->lessthanequalCondition($fieldname, $value["to"]);
         }
 
@@ -673,15 +712,48 @@ class atkNumberAttribute extends atkAttribute
 
         $value = $this->processSearchValue($value, $searchmode);
 
-        if ($searchmode != "between") {
+        if ($searchmode != "between")
+        {
             // Use default handler, and use only the first field.
             if (!array_key_exists('from', $value) || strlen(trim($value['from'])) == 0)
-                return false;
+                    return false;
             return parent::getSearchCondition($query, $table, $value["from"], $searchmode);
         }
-        else {
+        else
+        {
             $fieldname = $table . "." . $this->fieldName();
             return $this->getBetweenCondition($query, $fieldname, $value);
+        }
+    }
+
+    // Override search query
+    function searchCondition(&$query, $table, $value, $searchmode)
+    {
+        $db = &$this->getDb();
+
+        if ((atkconfig('compare_search', false)) && ($searchmode == 'exact'))
+        {
+            $cond = substr($value, 0, 1);    // strip off 1st character
+            $value = preg_replace('/[<>]/', '', $value);  //remove the > or < if there
+
+            $field = $table . "." . $this->fieldName();
+            $value = $this->fetchValue(array($this->fieldName() => $value));
+            $value = $this->value2db(array($this->fieldName() => $value));
+
+            if ($value != NULL)
+            {
+                if ($cond == '>')
+                        $searchcondition = $query->greaterthanCondition($field, $value);
+                elseif ($cond == '<')
+                        $searchcondition = $query->lessthanCondition($field, $value);
+                else
+                        parent::SearchCondition($query, $table, $value, $searchmode);
+            }
+            $query->addSearchCondition($searchcondition);
+        }
+        else
+        {
+            parent::SearchCondition($query, $table, $value, $searchmode);
         }
     }
 
