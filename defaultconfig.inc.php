@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of the ATK distribution on GitHub.
  * Detailed copyright and licensing information can be found
@@ -33,8 +32,7 @@
  */
 $config_application_root = "/";
 
-if ($config_atkroot == "" || (ini_get('register_globals') && isset($_REQUEST['config_atkroot']))) // may not be passed in request (register_globals danger)
-{
+if ($config_atkroot == "" || (ini_get('register_globals') && isset($_REQUEST['config_atkroot']))) { // may not be passed in request (register_globals danger)
     /**
      * The root of the ATK application, where the atk/ directory resides
      * @var String The root
@@ -42,9 +40,7 @@ if ($config_atkroot == "" || (ini_get('register_globals') && isset($_REQUEST['co
     $config_atkroot = "./";
 }
 
-if ( ! isset($config_application_dir) || empty($config_application_dir) || (ini_get('register_globals')
-  && isset($_REQUEST['config_application_dir'])))
-{
+if (!isset($config_application_dir) || empty($config_application_dir) || (ini_get('register_globals') && isset($_REQUEST['config_application_dir']))) {
     /**
      * Root directory of your application code (modules/themes/configuration files/etc)
      * relative to the script calling ATK.
@@ -63,7 +59,7 @@ if ( ! isset($config_application_dir) || empty($config_application_dir) || (ini_
  */
 $config_module_path = $config_application_dir . "modules";
 
-$config_corporate_node_base   = "";
+$config_corporate_node_base = "";
 $config_corporate_module_base = "";
 
 /**
@@ -314,17 +310,17 @@ $config_logfile = "/tmp/atk-security.log";
 
 /**
  * Password Restrictions if required
- *
+ * @var integer
  * 0 => ignore restriction
  * >0 => implement restriction
  * Special characters are    !@#$%^&*()-+_=[]{}\|;:'\",.<>/?
  */
-$config_password_minsize            = 0;
-$config_password_minupperchars      = 0;
-$config_password_minlowerchars      = 0;
+$config_password_minsize = 0;
+$config_password_minupperchars = 0;
+$config_password_minlowerchars = 0;
 $config_password_minalphabeticchars = 0;
-$config_password_minnumbers         = 0;
-$config_password_minspecialchars    = 0;
+$config_password_minnumbers = 0;
+$config_password_minspecialchars = 0;
 
 /* * ************************ AUTHENTICATION ******************************** */
 
@@ -752,7 +748,7 @@ $config_tplcachelifetime = 3600;
  *
  * @var String
  */
-$config_tplcompiledir    = $config_atktempdir . "compiled/tpl/";
+$config_tplcompiledir = $config_atktempdir . "compiled/tpl/";
 
 /**
  *
@@ -821,6 +817,21 @@ $config_encryption_defaultmethod = "base64";
  */
 $config_search_defaultmode = "substring";
 
+
+/**
+ *  Add Clear button to admin/list view
+ * @var boolean
+ */
+$config_clear_search = true;
+
+/**
+ * Enable < or > searches in list view
+ * @var boolean
+ * OK for number, currency  and date attributes
+ */
+$config_compare_search = true;
+
+
 /**
  * Wether or not to enable Internet Explorer extensions
  * @var boolean
@@ -834,8 +845,8 @@ $config_enable_ie_extensions = false;
  * @var Array
  */
 $config_allowed_includes = array("atk/lock/lock.php", "atk/lock/lock.js.php",
-  "atk/popups/help.inc", "atk/popups/colorpicker.inc",
-  "atk/ext/captcha/img/captcha.jpg.php");
+    "atk/popups/help.inc", "atk/popups/colorpicker.inc",
+    "atk/ext/captcha/img/captcha.jpg.php");
 
 /**
  * Forces the themecompiler to recompile the theme all the time
@@ -1003,7 +1014,7 @@ $config_lose_changes_warning = false;
 // --------- FCK Image Upload Option ---------
 
 $config_fck_filemanager_enabled = false;
-$config_fck_upload_path         = '../atktmp/';
+$config_fck_upload_path = '../atktmp/';
 
 /**
  * Zend framework path (relative to ATK root).
@@ -1040,4 +1051,5 @@ $config_autoload_reindex_on_missing_class = false;
  * @var boolean
  */
 $config_throw_exception_on_error = false;
+
 ?>

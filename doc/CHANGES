@@ -86,9 +86,9 @@ Changes in ATK 7.0 (WIP)
     The parameters for it are passed as arrays containing the necessary
     values. Author [yotmv] Added by [wayneh] See Wiki -
     http://www.achievo.org/wiki/index.php?title=AtkDateTimeNewAttribute&oldid=17181)
-*   Fixed bug in checkTabRights
-    (http://bugzilla.achievo.org/show_bug.cgi?id=1708) [wayneh]
-
++ Added option to add CLEAR button to admin/list page that clears all
+    search boxes. Documented in defaultconfig.inc.php - eg
+      $config_clear_search = true or false; [wayneh]
 
 
 Changes in ATK 6.6.0
