@@ -89,6 +89,20 @@ Changes in ATK 7.0 (WIP)
 + Added option to add CLEAR button to admin/list page that clears all
     search boxes. Documented in defaultconfig.inc.php - eg
       $config_clear_search = true or false; [wayneh]
++ Added atksecuritylistener to atksecuritymanager as a listener
+  Modified atksecuritylistener to log login failures, logins & logouts
+  and node actions performed. Activated by existing config entries -
+  $config_logging = 0; // No logging
+                       // 1 log login failures
+                       // 2 log login failures and logins/logouts
+                       // 3 log login failures, logins/logouts and
+                       // node actions performed
+  $config_logfile = "/tmp/atk-security.log";
+  From Antonio's idea  in forum [wayneh]
+  (http://forum.achievo.org/viewtopic.php?f=2&t=22942)
+  Note: fail2ban (www.fail2ban.org) could be used to monitor
+  log for multiple login failures and take action
+
 
 
 Changes in ATK 6.6.0

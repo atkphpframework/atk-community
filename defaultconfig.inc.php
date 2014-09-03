@@ -297,8 +297,11 @@ $config_security_attributes = false;
 $config_auth_grantall_privilege = "";
 
 /**
- * Zero is no logging
  * @var int
+ * 0 No logging
+ * 1 log login failures
+ * 2 log login failures and logins/logouts
+ * 3 log login failures, logins/logouts and
  */
 $config_logging = 0;
 
