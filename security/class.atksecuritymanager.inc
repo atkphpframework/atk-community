@@ -133,7 +133,18 @@ class atkSecurityManager
         // required interface;
         atkimport("atk.security.auth_interface");
 
-        $this->addListener(atknew('atk.security.atksecuritylistener'));
+        //$this->addListener(atknew('atk.security.atksecuritylistener'));
+        //$this->addListener(atknew(atkconfig("security_listeners", "atk.security.atksecuritylistener")));
+
+        $tmp_listeners = atkconfig("security_listeners", "atk.security.atksecuritylistener");
+        if (is_array($tmp_listeners) && (count($tmp_listeners) > 0)) {
+            foreach ($tmp_listeners as $listener_name) {
+                $this->addListener(atknew($listener_name));
+            }
+        }
+        else {
+            $this->addListener(atknew($tmp_listeners));
+        }
 
         $authentication = $this->_getAuthTypes($authentication_type);
         foreach ($authentication as $class) {
@@ -350,6 +361,29 @@ class atkSecurityManager
                         $this->m_user['AUTH'] = $authname; // something to see wich auth scheme is used
                         if (atkconfig("enable_ssl_encryption"))
                                 $this->m_user['PASS'] = $auth_pw; // used by aktsecurerelation to decrypt an linkpass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

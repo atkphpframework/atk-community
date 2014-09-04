@@ -297,6 +297,7 @@ $config_security_attributes = false;
 $config_auth_grantall_privilege = "";
 
 /**
+ * Security logging
  * @var int
  * 0 No logging
  * 1 log login failures
@@ -310,6 +311,14 @@ $config_logging = 0;
  * @var String
  */
 $config_logfile = "/tmp/atk-security.log";
+
+/**
+ * @var string  - name of security listener name in ATK import format
+ * or
+ * @var array   - array of security listener names
+ */
+//$config_security_listeners = "atk.security.atksecuritylistener";
+
 
 /**
  * Password Restrictions if required
