@@ -297,8 +297,12 @@ $config_security_attributes = false;
 $config_auth_grantall_privilege = "";
 
 /**
- * Zero is no logging
+ * Security logging
  * @var int
+ * 0 No logging
+ * 1 log login failures
+ * 2 log login failures and logins/logouts
+ * 3 log login failures, logins/logouts and
  */
 $config_logging = 0;
 
@@ -309,8 +313,16 @@ $config_logging = 0;
 $config_logfile = "/tmp/atk-security.log";
 
 /**
+ * @var string  - name of security listener name in ATK import format
+ * or
+ * @var array   - array of security listener names
+ */
+//$config_security_listeners = "atk.security.atksecuritylistener";
+
+
+/**
  * Password Restrictions if required
- *
+ * @var integer
  * 0 => ignore restriction
  * >0 => implement restriction
  * Special characters are    !@#$%^&*()-+_=[]{}\|;:'\",.<>/?
@@ -817,6 +829,21 @@ $config_encryption_defaultmethod = "base64";
  */
 $config_search_defaultmode = "substring";
 
+
+/**
+ *  Add Clear button to admin/list view
+ * @var boolean
+ */
+$config_clear_search = true;
+
+/**
+ * Enable < or > searches in list view
+ * @var boolean
+ * OK for number, currency  and date attributes
+ */
+$config_compare_search = true;
+
+
 /**
  * Wether or not to enable Internet Explorer extensions
  * @var boolean
@@ -1036,4 +1063,5 @@ $config_autoload_reindex_on_missing_class = false;
  * @var boolean
  */
 $config_throw_exception_on_error = false;
+
 ?>
