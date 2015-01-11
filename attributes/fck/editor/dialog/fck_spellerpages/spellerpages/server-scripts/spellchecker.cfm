@@ -18,7 +18,11 @@ others files in certain cases.
 <cfset spellercss   = "../spellerStyle.css">
 <cfset word_win_src = "../wordWindow.js">
 
-<cfset form.checktext = form["textinputs[]"]>
+<cfif StructKeyExists(form, 'textinputs[]')>
+	<cfset form.checktext = form["textinputs[]"]>
+<cfelse>
+	<cfabort>
+</cfif>
 
 <!--- make no difference between URL and FORM scopes --->
 <cfparam name="url.checktext"  default="">
@@ -65,7 +69,7 @@ others files in certain cases.
 <!--- Generate Text Inputs --->
 <cfset i = 0>
 <cfloop list="#submitted_text#" index="textinput">
-  <cfset texts.textinputs = ListAppend(texts.textinputs, 'textinputs[#i#] = decodeURIComponent("#textinput#");', CRLF)>
+  <cfset texts.textinputs = ListAppend(texts.textinputs, 'textinputs[#i#] = decodeURIComponent("' & htmleditformat( textinput ) & '");', CRLF)>
   <cfset i = i + 1>
 </cfloop>
 

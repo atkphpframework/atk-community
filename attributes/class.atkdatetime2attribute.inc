@@ -17,6 +17,7 @@
  *
  * @author Sandy Pleyte <sandy@achievo.org>
  * @updated //yotmv <brian@bcm.nu>
+ * See wiki http://www.achievo.org/wiki/index.php?title=AtkDateTimeNewAttribute&oldid=17181
  * @package atk
  * @subpackage attributes
  *

@@ -35,7 +35,8 @@ function smarty_resource_theme_source($tpl_name, &$tpl_source, &$smarty)
         }
 
         return true;
-    } else {
+    }
+    else {
         return false;
     }
 }
@@ -51,7 +52,8 @@ function smarty_resource_theme_timestamp($tpl_name, &$tpl_timestamp, &$smarty)
     if (!empty($path)) {
         $tpl_timestamp = filemtime($path);
         return true;
-    } else {
+    }
+    else {
         return false;
     }
 }

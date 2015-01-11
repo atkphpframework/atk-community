@@ -1,6 +1,6 @@
-/*
+﻿/*
  * FCKeditor - The text editor for Internet - http://www.fckeditor.net
- * Copyright (C) 2003-2008 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2010 Frederico Caldeira Knabben
  *
  * == BEGIN LICENSE ==
  *
@@ -59,8 +59,8 @@ FCKeditor.MinHeight = 200 ;
  */
 FCKeditor.MinWidth = 750 ;
 
-FCKeditor.prototype.Version			= '2.6.3' ;
-FCKeditor.prototype.VersionBuild	= '19836' ;
+FCKeditor.prototype.Version			= '2.6.11' ;
+FCKeditor.prototype.VersionBuild	= '25429' ;
 
 FCKeditor.prototype.Create = function()
 {
@@ -106,6 +106,8 @@ FCKeditor.prototype.CreateHtml = function()
 
 FCKeditor.prototype.ReplaceTextarea = function()
 {
+	if ( document.getElementById( this.InstanceName + '___Frame' ) )
+		return ;
 	if ( !this.CheckBrowser || this._IsCompatibleBrowser() )
 	{
 		// We must check the elements firstly using the Id and then the name.
@@ -175,7 +177,7 @@ FCKeditor.prototype._GetIFrameHtml = function()
 	if (this.ToolbarSet)
 		sLink += '&amp;Toolbar=' + this.ToolbarSet ;
 
-	html = '<iframe id="' + this.InstanceName +
+	var html = '<iframe id="' + this.InstanceName +
 		'___Frame" src="' + sLink +
 		'" width="' + this.Width +
 		'" height="' + this.Height ;
@@ -302,13 +304,19 @@ function FCKeditor_IsCompatibleBrowser()
 	// Internet Explorer 5.5+
 	if ( /*@cc_on!@*/false && sAgent.indexOf("mac") == -1 )
 	{
-		var sBrowserVersion = navigator.appVersion.match(/MSIE (.\..)/)[1] ;
+		var sBrowserVersion = navigator.appVersion.match(/MSIE ([\d.]+)/)[1] ;
 		return ( sBrowserVersion >= 5.5 ) ;
 	}
 
-	// Gecko (Opera 9 tries to behave like Gecko at this point).
-	if ( navigator.product == "Gecko" && navigator.productSub >= 20030210 && !( typeof(opera) == 'object' && opera.postError ) )
-		return true ;
+	if ( navigator.product == "Gecko" )
+	{
+		// introduced in Firefox 17.0
+		if ( sAgent.match(/gecko\/(\d+\.\d+)/i) )
+			return true ;
+		// Gecko (Opera 9 tries to behave like Gecko at this point).
+		if ( navigator.productSub >= 20030210 && !( typeof(opera) == 'object' && opera.postError ) )
+			return true ;
+	}
 
 	// Opera 9.50+
 	if ( window.opera && window.opera.version && parseFloat( window.opera.version() ) >= 9.5 )

@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for Internet - http://www.fckeditor.net
- * Copyright (C) 2003-2008 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2010 Frederico Caldeira Knabben
  *
  * == BEGIN LICENSE ==
  *
@@ -308,6 +308,11 @@ DlgTableCellSpace	: "Cellemarg",
 DlgTableCellPad		: "Cellepolstring",
 DlgTableCaption		: "Tittel",
 DlgTableSummary		: "Sammendrag",
+DlgTableHeaders		: "Headers",	//MISSING
+DlgTableHeadersNone		: "None",	//MISSING
+DlgTableHeadersColumn	: "First column",	//MISSING
+DlgTableHeadersRow		: "First Row",	//MISSING
+DlgTableHeadersBoth		: "Both",	//MISSING
 
 // Table Cell Dialog
 DlgCellTitle		: "Celleegenskaper",
@@ -330,6 +335,9 @@ DlgCellVerAlignTop	: "Topp",
 DlgCellVerAlignMiddle	: "Midten",
 DlgCellVerAlignBottom	: "Bunn",
 DlgCellVerAlignBaseline	: "Bunnlinje",
+DlgCellType		: "Cell Type",	//MISSING
+DlgCellTypeData		: "Data",	//MISSING
+DlgCellTypeHeader	: "Header",	//MISSING
 DlgCellRowSpan		: "Radspenn",
 DlgCellCollSpan		: "Kolonnespenn",
 DlgCellBackColor	: "Bakgrunnsfarge",
@@ -522,5 +530,10 @@ DlgAboutInfo		: "For mer informasjon, se",
 DlgDivGeneralTab	: "Generelt",
 DlgDivAdvancedTab	: "Avansert",
 DlgDivStyle		: "Stil",
-DlgDivInlineStyle	: "Inline Style"	//MISSING
+DlgDivInlineStyle	: "Inline Style",	//MISSING
+
+ScaytTitle			: "SCAYT",	//MISSING
+ScaytTitleOptions	: "Options",	//MISSING
+ScaytTitleLangs		: "Languages",	//MISSING
+ScaytTitleAbout		: "About"	//MISSING
 };

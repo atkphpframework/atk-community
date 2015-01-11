@@ -837,7 +837,8 @@ $config_search_defaultmode = "substring";
 $config_clear_search = true;
 
 /**
- * Enable < or > searches in list view
+ * Enable < or > searches for numeric/decimal/currency/date
+ * attributes in list view (ATK 7.0+)
  * @var boolean
  * OK for number, currency  and date attributes
  */

@@ -20,6 +20,8 @@
 atkimport("atk.attributes.atkdateattribute");
 atkimport("atk.attributes.atktimeattribute");
 
+define("AF_CLEAR_TOUCH_BUTTONS", AF_SPECIFIC_6); // Display butons to clear and 'touch' date
+
 /**
  * The atkDateTimeAttribute class can be used for date and time entry.
  * It corresponds to a DATETIME field in the database.
@@ -35,6 +37,7 @@ class atkDateTimeAttribute extends atkAttribute
     var $m_date = "";
     var $m_utcOffset = null;
     var $m_timezoneAttribute = null;
+    var $m_steps = null;
 
     /**
      * Converts a date array to a timestamp
@@ -92,11 +95,15 @@ class atkDateTimeAttribute extends atkAttribute
      */
     function atkDateTimeAttribute($name, $default_date = "", $default_time = "", $flags = 0)
     {
+        if (is_array($this->m_steps)) {
+            $default_steps = $this->m_steps;
+        }
+        else {
         $default_steps = array();
         for ($i = 0; $i < 60; $i ++) {
             $default_steps[$i] = $i;
         }
-
+        }
         if (is_numeric($default_date)) {
             $flags = $default_date;
             $default_date = "";

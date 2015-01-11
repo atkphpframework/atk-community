@@ -685,6 +685,34 @@ class atkNumberAttribute extends atkAttribute
         }
     }
 
+    // Override search query
+    function searchCondition(&$query, $table, $value, $searchmode)
+    {
+        $db = &$this->getDb();
+
+        if ((atkconfig('compare_search', false)) && ($searchmode == 'exact')) {
+            $cond = substr($value, 0, 1);    // strip off 1st character
+            $value = preg_replace('/[<>]/', '', $value);  //remove the > or < if there
+
+            $field = $table . "." . $this->fieldName();
+            $value = $this->fetchValue(array($this->fieldName() => $value));
+            $value = $this->value2db(array($this->fieldName() => $value));
+
+            if ($value != NULL) {
+                if ($cond == '>')
+                        $searchcondition = $query->greaterthanCondition($field, $value);
+                elseif ($cond == '<')
+                        $searchcondition = $query->lessthanCondition($field, $value);
+                else
+                        parent::SearchCondition($query, $table, $value, $searchmode);
+            }
+            $query->addSearchCondition($searchcondition);
+        }
+        else {
+            parent::SearchCondition($query, $table, $value, $searchmode);
+        }
+    }
+
 }
 
 ?>

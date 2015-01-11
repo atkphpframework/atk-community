@@ -342,6 +342,21 @@ class atkDateAttribute extends atkAttribute
         //    $this -> hasFlag(AF_OBLIGATORY));
         $dateEdit = $this->draw($record, $fieldprefix, "", $mode, $this->hasFlag(AF_OBLIGATORY));
         if ($this->hasFlag(AF_CLEAR_TOUCH_BUTTONS)) {
+            if ($this->hasFlag(AF_OBLIGATORY)) {
+                return $dateEdit . "&nbsp;&nbsp;-&nbsp;&nbsp;" .
+                        ' <input type="button" onclick="
+                    $(\'' . $this->getAttributeHtmlId() . '[day]\').selectedIndex=0;
+                    $(\'' . $this->getAttributeHtmlId() . '[month]\').selectedIndex=0;
+                    $(\'' . $this->getAttributeHtmlId() . '[year]\').value=\'\';
+                    " value="&empty;" class="atkDateAttribute button atkbutton">
+                    <input type="button" onclick="
+                    var d = new Date();
+                     $(\'' . $this->getAttributeHtmlId() . '[day]\').selectedIndex=d.getDate()-1;
+                    $(\'' . $this->getAttributeHtmlId() . '[month]\').selectedIndex=d.getMonth();
+                    $(\'' . $this->getAttributeHtmlId() . '[year]\').value=d.getFullYear();
+                    " value="&lAarr;" class="atkDateAttribute button atkbutton">';
+            }
+            else {
             return $dateEdit . "&nbsp;&nbsp;-&nbsp;&nbsp;" .
                 ' <input type="button" onclick="
          $(\'' . $this->getAttributeHtmlId() . '[day]\').selectedIndex=0;
@@ -354,7 +369,9 @@ class atkDateAttribute extends atkAttribute
          $(\'' . $this->getAttributeHtmlId() . '[month]\').selectedIndex=d.getMonth()+1;
          $(\'' . $this->getAttributeHtmlId() . '[year]\').value=d.getFullYear();
       " value="&lAarr;" class="atkDateAttribute button atkbutton">';
-        } else {
+            }
+        }
+        else {
             return $dateEdit;
         }
     }
@@ -1402,6 +1419,39 @@ class atkDateAttribute extends atkAttribute
     public function getYearSorting()
     {
         return $this->m_year_sorting;
+    }
+
+    // Override search query
+    function searchCondition(&$query, $table, $value, $searchmode)
+    {
+        $db = &$this->getDb();
+
+        if ((atkconfig('compare_search', false)) && ($searchmode == 'substring')) {
+            // NOTE Dates in the m/d/y or d-m-y formats are disambiguated
+            // by looking at the separator between the various components:
+            // If the separator is a slash (/), then the American m/d/y
+            // is assumed; whereas if the separator is a dash (-) or
+            // a dot (.), then the European d-m-y format is assumed.
+
+            $cond = substr($value, 0, 1);    // strip off 1st character
+            $value = preg_replace('/[<>]/', '', $value);  //remove the > or < if there
+            $field = $db->func_datetochar($table . "." . $this->fieldName());
+            $value = $this->fetchValue(array($this->fieldName() => $value));
+            $value = $this->value2db(array($this->fieldName() => $value));
+
+            if ($value != NULL) {
+                if ($cond == '>')
+                        $searchcondition = $query->greaterthanCondition($field, $value);
+                elseif ($cond == '<')
+                        $searchcondition = $query->lessthanCondition($field, $value);
+                else // Not < or > so treat as per normalsearch
+                        parent::SearchCondition($query, $table, $value, $searchmode);
+            }
+            $query->addSearchCondition($searchcondition);
+        }
+        else {
+            parent::SearchCondition($query, $table, $value, $searchmode);
+        }
     }
 
 }

@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for Internet - http://www.fckeditor.net
- * Copyright (C) 2003-2008 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2010 Frederico Caldeira Knabben
  *
  * == BEGIN LICENSE ==
  *
@@ -308,6 +308,11 @@ DlgTableCellSpace	: "सैल अंतर",
 DlgTableCellPad		: "सैल पैडिंग",
 DlgTableCaption		: "शीर्षक",
 DlgTableSummary		: "सारांश",
+DlgTableHeaders		: "Headers",	//MISSING
+DlgTableHeadersNone		: "None",	//MISSING
+DlgTableHeadersColumn	: "First column",	//MISSING
+DlgTableHeadersRow		: "First Row",	//MISSING
+DlgTableHeadersBoth		: "Both",	//MISSING
 
 // Table Cell Dialog
 DlgCellTitle		: "सैल प्रॉपर्टीज़",
@@ -330,6 +335,9 @@ DlgCellVerAlignTop	: "ऊपर",
 DlgCellVerAlignMiddle	: "मध्य",
 DlgCellVerAlignBottom	: "नीचे",
 DlgCellVerAlignBaseline	: "मूलरेखा",
+DlgCellType		: "Cell Type",	//MISSING
+DlgCellTypeData		: "Data",	//MISSING
+DlgCellTypeHeader	: "Header",	//MISSING
 DlgCellRowSpan		: "पंक्ति स्पैन",
 DlgCellCollSpan		: "कालम स्पैन",
 DlgCellBackColor	: "बैक्ग्राउन्ड रंग",
@@ -522,5 +530,10 @@ DlgAboutInfo		: "अधिक जानकारी के लिये यह�
 DlgDivGeneralTab	: "सामान्य",
 DlgDivAdvancedTab	: "एड्वान्स्ड",
 DlgDivStyle		: "स्टाइल",
-DlgDivInlineStyle	: "इनलाइन स्टाइल"
+DlgDivInlineStyle	: "इनलाइन स्टाइल",
+
+ScaytTitle			: "SCAYT",	//MISSING
+ScaytTitleOptions	: "Options",	//MISSING
+ScaytTitleLangs		: "Languages",	//MISSING
+ScaytTitleAbout		: "About"	//MISSING
 };

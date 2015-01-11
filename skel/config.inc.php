@@ -65,9 +65,8 @@ $config_recordsperpage = 25;
 // The automatic error reporter
 // Error reports are sent to the given email address.
 // If you set this to "", error reporting will be turned off.
-// WARNING: DO NOT LEAVE THIS TO THE DEFAULT ADDRESS OR PREPARE TO BE
-// SEVERELY FLAMED!
-// $config_mailreport = "ivo@ibuildings.net";
+$config_mailreport = "";
+
 // The debug level.
 // -1 - No debug information
 //  0 - No debug information, but still stored for atk errormails
@@ -218,7 +217,25 @@ $config_auth_accesstable = "accessright";
 // popup.
 $config_auth_loginform = true;
 $config_max_loginattempts = 5;
+/**
+ * Password Restrictions if required
+ * (Used by atkpasswordattribute)
+ *
+ * 0 => ignore restriction
+ * >0 => implement restriction
+ * Special characters are    !@#$%^&*()-+_=[]{}\|;:'\",.<>/?
+ */
+/*
+  $config_password_restrictions = array(
 
+  "minsize" => 0,
+  "minupperchars" => 0,
+  "minlowerchars" => 0,
+  "minalphabeticchars" => 0,
+  "minnumbers" => 0,
+  "minspecialchars" => 0
+  ); // 0 => no restriction
+ */
 // When changerealm is true, the authentication realm is changed on every login.
 // Advantage: the user is able to logout using the logout link.
 // Disadvantage: browser's 'remember password' feature won't work.
@@ -236,9 +253,11 @@ $config_auth_changerealm = false;
 //$config_auth_mail_suffix = "ibuildings.nl";
 // Mail server name
 // $config_auth_mail_server = "localhost";
+//
 // Port of the mail server (default is 110 (pop3) but you can set it
 // to 143 (imap) or something else.
 // $config_auth_mail_port = 143;
+//
 // if you use "ldap" as authentication, these parameters are nessesary
 // $config_auth_ldap_host = "";
 // $config_auth_ldap_context = "";

@@ -1,7 +1,7 @@
 [//lasso
 /*
  * FCKeditor - The text editor for Internet - http://www.fckeditor.net
- * Copyright (C) 2003-2008 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2010 Frederico Caldeira Knabben
  *
  * == BEGIN LICENSE ==
  *
@@ -39,6 +39,9 @@
     to server root).
 
     Set which file extensions are allowed and/or denied for each file type.
+
+    WARNING: It is recommended to remove swf extension from the list of allowed extensions.
+    SWF files can be used to perform XSS attack.
     */
 	var('config') = map(
 		'Enabled' = false,

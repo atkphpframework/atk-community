@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for Internet - http://www.fckeditor.net
- * Copyright (C) 2003-2008 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2010 Frederico Caldeira Knabben
  *
  * == BEGIN LICENSE ==
  *
@@ -308,6 +308,11 @@ DlgTableCellSpace	: "Vzdálenost buněk",
 DlgTableCellPad		: "Odsazení obsahu",
 DlgTableCaption		: "Popis",
 DlgTableSummary		: "Souhrn",
+DlgTableHeaders		: "Záhlaví",
+DlgTableHeadersNone		: "Žádné",
+DlgTableHeadersColumn	: "První sloupec",
+DlgTableHeadersRow		: "První řádek",
+DlgTableHeadersBoth		: "Oboje",
 
 // Table Cell Dialog
 DlgCellTitle		: "Vlastnosti buňky",
@@ -330,6 +335,9 @@ DlgCellVerAlignTop	: "Nahoru",
 DlgCellVerAlignMiddle	: "Doprostřed",
 DlgCellVerAlignBottom	: "Dolů",
 DlgCellVerAlignBaseline	: "Na účaří",
+DlgCellType		: "Typ buňky",
+DlgCellTypeData		: "Data",
+DlgCellTypeHeader	: "Zálaví",
 DlgCellRowSpan		: "Sloučené řádky",
 DlgCellCollSpan		: "Sloučené sloupce",
 DlgCellBackColor	: "Barva pozadí",
@@ -522,5 +530,10 @@ DlgAboutInfo		: "Více informací získáte na",
 DlgDivGeneralTab	: "Obecné",
 DlgDivAdvancedTab	: "Rozšířené",
 DlgDivStyle		: "Styl",
-DlgDivInlineStyle	: "Vložený styl"
+DlgDivInlineStyle	: "Vložený styl",
+
+ScaytTitle			: "SCAYT",
+ScaytTitleOptions	: "Nastavení",
+ScaytTitleLangs		: "Jazyky",
+ScaytTitleAbout		: "O aplikaci"
 };

@@ -263,6 +263,28 @@ class atkTimeAttribute extends atkAttribute
         //return $m_hourBox . ":" . $m_minBox . $m_secBox;
         $timeedit = $m_hourBox . ":" . $m_minBox . $m_secBox;
         if ($this->hasFlag(AF_CLEAR_TOUCH_BUTTONS)) {
+            if ($this->hasFlag(AF_OBLIGATORY)) {
+                $tmp = $timeedit . "&nbsp;&nbsp;" .
+                        ' <input type="button" onclick="
+                 $(\'' . $this->getAttributeHtmlId() . '[hours]\').selectedIndex=0;
+                 $(\'' . $this->getAttributeHtmlId() . '[minutes]\').selectedIndex=0;';
+                if ($this->hasFlag(AF_TIME_SECONDS)) {
+                    $tmp .= '$(\'' . $this->getAttributeHtmlId() . '[seconds]\').selectedIndex=0;';
+                }
+                $tmp .= '" value="&empty;" class="atkDateAttribute button atkbutton">
+                <input type="button" onclick="
+                var d = new Date();
+                var mi = Math.round(d.getMinutes()/Math.round(60 / ' . $size_minbox . '));
+                $(\'' . $this->getAttributeHtmlId() . '[hours]\').selectedIndex=d.getHours();
+                $(\'' . $this->getAttributeHtmlId() . '[minutes]\').selectedIndex=mi;';
+                if ($this->hasFlag(AF_TIME_SECONDS)) {
+                    $tmp .= 'var mi = Math.round(d.getSeconds()/Math.round(60 / ' . $size_secbox . '));
+                $(\'' . $this->getAttributeHtmlId() . '[seconds]\').selectedIndex=mi+1;';
+                }
+                $tmp .= '" value="&lAarr;" class="atkDateAttribute button atkbutton">';
+                return $tmp;
+            }
+            else {
             $tmp = $timeedit . "&nbsp;&nbsp;" .
                 ' <input type="button" onclick="
          $(\'' . $this->getAttributeHtmlId() . '[hours]\').selectedIndex=0;

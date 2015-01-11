@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for Internet - http://www.fckeditor.net
- * Copyright (C) 2003-2008 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2010 Frederico Caldeira Knabben
  *
  * == BEGIN LICENSE ==
  *
@@ -97,7 +97,7 @@ FCKConfig.ProcessHiddenField = function()
 			this.PageConfig[ sKey ] = false ;
 
 		else if ( sVal.length > 0 && !isNaN( sVal ) )	// If it is a number.
-			this.PageConfig[ sKey ] = parseInt( sVal, 10 ) ;
+			this.PageConfig[ sKey ] = parseFloat( sVal ) ;
 
 		else										// In any other case it is a string.
 			this.PageConfig[ sKey ] = sVal ;
@@ -154,7 +154,7 @@ FCKConfig.Plugins.Items = new Array() ;
 
 FCKConfig.Plugins.Add = function( name, langs, path )
 {
-	FCKConfig.Plugins.Items.AddItem( [name, langs, path] ) ;
+	FCKConfig.Plugins.Items.push( [name, langs, path] ) ;
 }
 
 // FCKConfig.ProtectedSource: object that holds a collection of Regular
@@ -180,7 +180,7 @@ FCKConfig.ProtectedSource.RegexEntries = [
 
 FCKConfig.ProtectedSource.Add = function( regexPattern )
 {
-	this.RegexEntries.AddItem( regexPattern ) ;
+	this.RegexEntries.push( regexPattern ) ;
 }
 
 FCKConfig.ProtectedSource.Protect = function( html )
