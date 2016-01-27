@@ -1,55 +1,52 @@
 <?php
+/**
+ * This file is part of the ATK distribution on GitHub.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage attributes
+ *
+ * @copyright (c)2000-2004 Ivo Jansch
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision: 6305 $
+ * $Id: class.atklistattribute.inc 7126 2011-05-26 22:33:22Z ijansch $
+ */
+atkimport("atk.attributes.atkattribute");
 
-  /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage attributes
-   *
-   * @copyright (c)2000-2004 Ivo Jansch
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision: 6305 $
-   * $Id$
-   */
+/**
+ * Do not translate the options
+ */
+define("AF_NO_TRANSLATION", AF_SPECIFIC_1);
 
-  atkimport("atk.attributes.atkattribute");
+/**
+ * Do not add a null option although global config "list_obligatory_null_item"
+ */
+define("AF_LIST_NO_OBLIGATORY_NULL_ITEM", AF_SPECIFIC_2);
 
-  /**
-   * Do not translate the options
-   */
-  define("AF_NO_TRANSLATION", AF_SPECIFIC_1);
+/**
+ * Do not add null option ever
+ */
+define("AF_LIST_NO_NULL_ITEM", AF_SPECIFIC_3);
 
-  /**
-   * Do not add a default null option.
-   */
-  define("AF_LIST_NO_OBLIGATORY_NULL_ITEM", AF_SPECIFIC_2);
+/**
+ * Add a null option to obligatory items
+ */
+define("AF_LIST_OBLIGATORY_NULL_ITEM", AF_SPECIFIC_4);
 
-  /**
-   * Do not add null option ever
-   */
-  define("AF_LIST_NO_NULL_ITEM", AF_SPECIFIC_3);
-
-  /**
-   * Add a default null option to obligatory items
-   */
-  define("AF_LIST_OBLIGATORY_NULL_ITEM", AF_SPECIFIC_4);
-
-
-  /**
-   * The atkListAttribute class represents an attribute of a node
-   * that has a selectbox to select from predefined values.
-   *
-   * @author Ivo Jansch <ivo@achievo.org>
-   * @package atk
-   * @subpackage attributes
-   *
-   */
-  class atkListAttribute extends atkAttribute
-  {
+/**
+ * The atkListAttribute class represents an attribute of a node
+ * that has a selectbox to select from predefined values.
+ *
+ * @author Ivo Jansch <ivo@achievo.org>
+ * @package atk
+ * @subpackage attributes
+ *
+ */
+class atkListAttribute extends atkAttribute
+{
     /**
      * Array with options for Listbox
      */
@@ -78,23 +75,38 @@
     /**
      * Value that is used when list is empty, normally empty
      */
-     var $m_emptyvalue;
+    var $m_emptyvalue;
 
-     /**
-      * The width of the dropdown list in pixels
-      * @var int
-      */
-     var $m_width;
+    /**
+     * The width of the dropdown list in pixels
+     * @var int
+     */
+    var $m_width;
+    var $m_onchangehandler_init = "newvalue = el.options[el.selectedIndex].value;\n";
 
-     var $m_onchangehandler_init = "newvalue = el.options[el.selectedIndex].value;\n";
+    /**
+     * When autosearch is set to true, this attribute will automatically submit
+     * the search form onchange. This will only happen in the admin action.
+     *
+     * @var boolean
+     */
+    protected $m_autoSearch = false;
 
-     /**
-      * When autosearch is set to true, this attribute will automatically submit
-      * the search form onchange. This will only happen in the admin action.
-      *
-      * @var boolean
-      */
-     protected $m_autoSearch = false;
+    /**
+     * Render a multiple select also in simple search (grid)
+     *
+     * @var bool
+     */
+    private $m_multipleInSimpleSearch = false;
+
+    /**
+     * Use Quick[select] plugin (http://eggboxio.github.io/quick-select/) to expand the selection as a series of buttons.
+     * Comes handy when there are only a few options.
+     * (see expandAsButtons function)
+     *
+     * @var bool|array False (disabled), True (enabled with default options), Array of options
+     */
+    private $m_expandAsButtons = false;
 
     /**
      * Constructor.
@@ -112,37 +124,34 @@
      * @param int $flags Flags for this attribute
      * @param int $size  Size of the attribute.
      */
-    function atkListAttribute($name, $optionArray, $valueArray="", $flags=0, $size=0)
+    function atkListAttribute($name, $optionArray, $valueArray = "", $flags = 0, $size = 0)
     {
-      if (!is_array($valueArray) || count($valueArray)==0)
-      {
-        if (is_numeric($valueArray))
-          $flags = $valueArray;
-        $valueArray = $optionArray;
-      }
-
-      // If all values are numeric, we can use a numeric field to store the selected
-      // value.
-      $this->m_dbfieldtype = "number";
-      for ($i=0, $_i=count($valueArray); $i<$_i && $this->m_dbfieldtype=="number"; $i++)
-      {
-        if (!is_numeric($valueArray[$i])) $this->m_dbfieldtype="string";
-        // if one of the values is not a number, the fieldtype must be string, and
-        // the loop is stopped.
-      }
-
-      // If no size is specified, the max size we have is equal to the biggest value.
-      if ($size==0)
-      {
-        for ($i=0, $_i=count($valueArray); $i<$_i; $i++)
-        {
-          $size = max($size, atk_strlen($valueArray[$i]));
+        if (!is_array($valueArray) || count($valueArray) == 0) {
+            if (is_numeric($valueArray))
+                $flags = $valueArray;
+            $valueArray = $optionArray;
         }
-      }
 
-      $this->atkAttribute($name, $flags, $size); // base class constructor
+        // If all values are numeric, we can use a numeric field to store the selected
+        // value.
+        $this->m_dbfieldtype = "number";
+        for ($i = 0, $_i = count($valueArray); $i < $_i && $this->m_dbfieldtype == "number"; $i ++) {
+            if (!is_numeric($valueArray[$i]))
+                $this->m_dbfieldtype = "string";
+            // if one of the values is not a number, the fieldtype must be string, and
+            // the loop is stopped.
+        }
 
-      $this->setOptions($optionArray, $valueArray);
+        // If no size is specified, the max size we have is equal to the biggest value.
+        if ($size == 0) {
+            for ($i = 0, $_i = count($valueArray); $i < $_i; $i ++) {
+                $size = max($size, atk_strlen($valueArray[$i]));
+            }
+        }
+
+        $this->atkAttribute($name, $flags, $size); // base class constructor
+
+        $this->setOptions($optionArray, $valueArray);
     }
 
     /**
@@ -151,14 +160,13 @@
      * @param array $optionArray
      * @param array $valueArray
      */
-    function createLookupArray($optionArray,$valueArray)
+    function createLookupArray($optionArray, $valueArray)
     {
-      foreach ($optionArray AS $id => $option)
-      {
-        $this->m_lookup[$valueArray[$id]] = $option;
-      }
+        foreach ($optionArray AS $id => $option) {
+            $this->m_lookup[$valueArray[$id]] = $option;
+        }
 
-      $this->_set("lookup",$this->m_lookup);
+        $this->_set("lookup", $this->m_lookup);
     }
 
     /**
@@ -167,11 +175,11 @@
      *
      * @param array $rec The record
      */
-    function getOptions($rec=null)
+    function getOptions($rec = null)
     {
-      if(!isset($this->m_types["options"]) || count($this->m_types["options"]) == 0)
-        return $this->m_options;
-      return $this->_get("options",$rec);
+        if (!isset($this->m_types["options"]) || count($this->m_types["options"]) == 0)
+            return $this->m_options;
+        return $this->_get("options", $rec);
     }
 
     /**
@@ -180,11 +188,11 @@
      *
      * @param array $rec The record
      */
-    function getValues($rec=null)
+    function getValues($rec = null)
     {
-      if(!isset($this->m_types["values"]) || count($this->m_types["values"]) == 0)
-        return $this->m_values;
-      return $this->_get("values",$rec);
+        if (!isset($this->m_types["values"]) || count($this->m_types["values"]) == 0)
+            return $this->m_values;
+        return $this->_get("values", $rec);
     }
 
     /**
@@ -193,11 +201,11 @@
      *
      * @param array $rec The record
      */
-    function getLookup($rec=null)
+    function getLookup($rec = null)
     {
-      if(!isset($this->m_types["lookup"]) || count($this->m_types["lookup"]) == 0)
-        return $this->m_lookup;
-      return $this->_get("lookup",$rec);
+        if (!isset($this->m_types["lookup"]) || count($this->m_types["lookup"]) == 0)
+            return $this->m_lookup;
+        return $this->_get("lookup", $rec);
     }
 
     /**
@@ -210,9 +218,9 @@
      * @param array $rec The record
      * @return array with options, values or lookup
      */
-    function _get($type,$rec=null)
+    function _get($type, $rec = null)
     {
-      return $this->m_types[$type];
+        return $this->m_types[$type];
     }
 
     /**
@@ -225,10 +233,10 @@
      * @param array $value
      * @return true
      */
-    function _set($type,$value)
+    function _set($type, $value)
     {
-      $this->m_types[$type]=$value;
-      return true;
+        $this->m_types[$type] = $value;
+        return true;
     }
 
     /**
@@ -238,7 +246,7 @@
      */
     function display($record)
     {
-      return $this->_translateValue($record[$this->fieldName()],$record);
+        return $this->_translateValue($record[$this->fieldName()], $record);
     }
 
     /**
@@ -248,16 +256,17 @@
      * @param array $rec The record
      * @return string
      */
-    function _translateValue($value,$rec=null)
+    function _translateValue($value, $rec = null)
     {
-      $lookup = $this->getLookup($rec);
-      $res="";
-      if(isset($lookup[$value]))
-      {
-        if($this->hasFlag(AF_NO_TRANSLATION)) $res = $lookup[$value];
-        else $res = $this->text($lookup[$value]);
-      }
-      return $res;
+        $lookup = $this->getLookup($rec);
+        $res = "";
+        if (isset($lookup[$value])) {
+            if ($this->hasFlag(AF_NO_TRANSLATION))
+                $res = $lookup[$value];
+            else
+                $res = $this->text(array($this->fieldName() . '_' . $lookup[$value], $lookup[$value]));
+        }
+        return $res;
     }
 
     /**
@@ -269,70 +278,108 @@
      * @param String $mode The mode we're in ('add' or 'edit')
      * @return piece of html code with a checkbox
      */
-    function edit($record="", $fieldprefix="", $mode="")
+    function edit($record = "", $fieldprefix = "", $mode = "")
     {
-      // todo: configurable rows
-      $id = $this->getHtmlId($fieldprefix);
-      $this->registerKeyListener($id, KB_CTRLCURSOR|KB_LEFTRIGHT);
+        // todo: configurable rows
+        $id = $this->getHtmlId($fieldprefix);
+        $this->registerKeyListener($id, KB_CTRLCURSOR | KB_LEFTRIGHT);
+        $this->registerJavaScriptObservers($id);
 
-      $onchange='';
-      if (count($this->m_onchangecode))
-      {
-        $onchange = 'onChange="'.$id.'_onChange(this);"';
-        $this->_renderChangeHandler($fieldprefix);
-      }
-
-      $result = '<select id="'.$id.'" name="'.$id.'"  class="atklistattribute" '.$onchange.($this->m_width?" style='width: {$this->m_width}px'":"").'>';
-
-      $result.=$this->_addEmptyListOption();
-
-      $values   = $this->getValues($record);
-      $recvalue = atkArrayNvl($record,$this->fieldName());
-
-      for ($i=0;$i<count($values);$i++)
-      {
-        // If the current value is selected or occurs in the record
-        if ((!is_null($this->m_selected) && $values[$i] == $this->m_selected) ||
-            ( is_null($this->m_selected) && $values[$i] == $recvalue && $recvalue!==""))
-        {
-          $sel = "selected";
-        }
-        else
-        {
-          $sel = "";
+        $onchange = '';
+        if (count($this->m_onchangecode)) {
+            $onchange = 'onChange="' . $id . '_onChange(this);"';
+            $this->_renderChangeHandler($fieldprefix);
         }
 
-        $result.= '<option value="'.$values[$i].'" '.$sel.'>'.$this->_translateValue($values[$i],$record);
-      }
+        $result = '<select id="' . $id . '" name="' . $id . '"  class="form-control atklistattribute" ' . $onchange . ($this->m_width
+                    ? " style='width: {$this->m_width}px'" : "") . '>';
 
-      $result.='</select>';
-      return $result;
+        $result .= $this->_addEmptyListOption();
+
+        $values = $this->getValues($record);
+        $recvalue = atkArrayNvl($record, $this->fieldName());
+
+        for ($i = 0; $i < count($values); $i ++) {
+            // If the current value is selected or occurs in the record
+            if ((!is_null($this->m_selected) && $values[$i] == $this->m_selected) ||
+                ( is_null($this->m_selected) && $values[$i] == $recvalue && $recvalue !== "")) {
+                $sel = "selected";
+            } else {
+                $sel = "";
+            }
+
+            $result.= '<option value="' . $values[$i] . '" ' . $sel . '>' . $this->_translateValue($values[$i], $record);
+        }
+
+        $result.='</select>';
+        $result .= $this->getSpinner();
+
+        if ($this->m_expandAsButtons) {
+            // use Quick[select] plugin to expand the selection as a series of buttons
+            $page = $this->m_ownerInstance ? $this->m_ownerInstance->getPage() : atkinstance('atk.ui.atkpage');
+            $page->register_script(atkconfig("atkroot") . "atk/javascript/quickselect/jquery.quickselect.min.js");
+            $page->register_style(atkconfig("atkroot") . "atk/javascript/quickselect/quickselect.css");
+            $options = json_encode($this->m_expandAsButtons);
+            $page->register_loadscript("
+                jQuery('#$id').quickselect($options);
+            ");
+        }
+
+        return $result;
     }
 
     /**
-     * If this attribute is NOT obligatory
-     * Or if the attribute is obligatory and we set a config saying all obligatory lists should have a null item
-     * and we didn't add the flag AF_LIST_NO_OBLIGATORY_NULL_ITEM
-     * Or if the AF_LIST_OBLIGATORY_NULL_ITEM is set
-     * ... we add an empty list option
+     * Enable Quick[select] plugin (http://eggboxio.github.io/quick-select/) to expand the selection as a series of buttons.
+     *
+     * @param array Quick[select] Options (or null for default options)
+     */
+    function expandAsButtons($options = null)
+    {
+        if (!$options || !is_array($options)) {
+            $options = array();
+        }
+        $defaultOptions = array(
+            'activeButtonClass' => 'btn-primary atkdefaultbutton active',
+            'buttonClass' => 'btn btn-default',
+            'breakOutAll' => true,
+            'wrapperClass' => 'btn-group'
+        );
+
+        $this->m_expandAsButtons = array_merge($defaultOptions, $options);
+    }
+
+    /**
+     * Add an empty list option if appropriate.
      * @return The empty list option or an empty string
      */
     function _addEmptyListOption()
     {
-      $ret='';
+        $ret = '';
 
-      // use a different (more descriptive) text for obligatory items
-      $text_key = $this->hasFlag(AF_OBLIGATORY) ? "list_null_value_obligatory" : "list_null_value";
+        // use a different (more descriptive) text for obligatory items
+        $text_key = $this->hasFlag(AF_OBLIGATORY) ? "list_null_value_obligatory" : "list_null_value";
 
-      if (!$this->hasFlag(AF_LIST_NO_NULL_ITEM) ||
-           ($this->hasFlag(AF_OBLIGATORY) &&
-           // CONFIG IS DEPRECATED
-          ((atkconfig("list_obligatory_null_item")&&!$this->hasFlag(AF_LIST_NO_OBLIGATORY_NULL_ITEM))||
-           ($this->hasFlag(AF_LIST_OBLIGATORY_NULL_ITEM)))))
-      {
-        $ret = '<option value="'.$this->m_emptyvalue.'">'.atk_htmlentities($this->text(array($this->fieldName().'_'.$text_key, $text_key))).'</option>';
-      }
-      return $ret;
+        if (!$this->hasFlag(AF_LIST_NO_NULL_ITEM)) {
+            if (!$this->hasFlag(AF_OBLIGATORY) || (
+                    $this->hasFlag(AF_LIST_OBLIGATORY_NULL_ITEM) ||
+                    (atkconfig("list_obligatory_null_item") && !$this->hasFlag(AF_LIST_NO_OBLIGATORY_NULL_ITEM))
+                )
+            ) {
+                $ret = '<option value="' . $this->m_emptyvalue . '">' . atk_htmlentities($this->text(array(
+                            $this->fieldName() . '_' . $text_key, $text_key))) . '</option>';
+            }
+        }
+        return $ret;
+    }
+
+    function getMultipleInSimpleSearch()
+    {
+        return $this->m_multipleInSimpleSearch;
+    }
+
+    function setMultipleInSimpleSearch($value)
+    {
+        $this->m_multipleInSimpleSearch = $value;
     }
 
     /**
@@ -356,45 +403,61 @@
      *
      * @return String A piece of html-code with a checkbox
      */
-    function search($record="", $extended=false, $fieldprefix="", $grid=null)
+    function search($record = "", $extended = false, $fieldprefix = "", $grid = null, $notSelectFirst = false)
     {
-      $values = $this->getValues($record);
-      $result = '<select ';
-      if ($extended)
-      {
-        $result.='multiple size="'.min(5,count($values)+1).'"';
-      }
-
-      // if we use autosearch, register an onchange event that submits the grid
-      if (!is_null($grid) && !$extended && $this->m_autoSearch) {
-        $id = $this->getSearchFieldName($fieldprefix);
-        $result .= '  id="'.$id.'" ';
-        $code = '$(\''.$id.'\').observe(\'change\', function(event) { ' .
-          $grid->getUpdateCall(array('atkstartat' => 0), array(), 'ATK.DataGrid.extractSearchOverrides') .
-          ' return false; });';
-        $this->getOwnerInstance()->getPage()->register_loadscript($code);
-      }
-
-      $result .= 'name="'.$this->getSearchFieldName($fieldprefix).'[]">';
-
-      $result .= '<option value="">'.atktext('search_all');
-
-      foreach ($values AS $value)
-      {
-        if (atk_in_array(((string)$value),$record[$this->fieldName()], true) && $record[$this->fieldName()]!=="")
-        {
-          $sel = "selected";
-        }
-        else
-        {
-          $sel = "";
+        $values = $this->getValues($record);
+        $result = '<select class="form-control"';
+        if ($extended || $this->getMultipleInSimpleSearch()) {
+            $cnt = count($values) + ((!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_LIST_NO_NULL_ITEM)) ? 2 : 1);
+            $result .= ' multiple size="' . min(5, $cnt) . '"';
         }
 
-        $result.= '<option value="'.$value.'" '.$sel.'>'.$this->_translateValue($value,$record);
-      }
+        // if we use autosearch, register an onchange event that submits the grid
+        if (!is_null($grid) && !$extended && $this->m_autoSearch) {
+            $id = $this->getSearchFieldName($fieldprefix);
+            $result .= ' id="' . $id . '" ';
+            $code = '$(\'' . $id . '\').observe(\'change\', function(event) { ' .
+                $grid->getUpdateCall(array('atkstartat' => 0), array(), 'ATK.DataGrid.extractSearchOverrides') .
+                ' return false; });';
+            $this->getOwnerInstance()->getPage()->register_loadscript($code);
+        }
 
-      $result.='</select>';
-      return $result;
+        $result .= ' name="' . $this->getSearchFieldName($fieldprefix) . '[]">';
+
+        $selValues = $record[$this->fieldName()];
+        if (!is_array($selValues)) {
+            $selValues = [$selValues];
+        }
+
+        if ($this->getMultipleInSimpleSearch() && count($selValues) == 1 && strpos($selValues[0], ',') !== false) {
+            // in case of multiple select in simple search, we have the selected values into a single string (csv)
+            $selValues = explode(',', $selValues[0]);
+        }
+
+        // "search all" option
+        if ($selValues[0] == '') {
+            $selValues = array(''); // has precedence (even if another options are selected together)
+        }
+        $result .= sprintf('<option value=""%s>%s</option>',
+            (!$notSelectFirst && $selValues[0] == '') ? ' selected="selected"' : '',
+            atktext('search_all'));
+
+        // "none" option
+        if (!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_LIST_NO_NULL_ITEM)) {
+            $result .= sprintf('<option value="__NONE__"%s>%s</option>',
+                atk_in_array('__NONE__', $selValues) ? ' selected="selected"' : '',
+                atktext('search_none'));
+        }
+
+        // normal options
+        foreach ($values AS $value) {
+            $result .= sprintf('<option value="%s"%s>%s</option>', $value,
+                atk_in_array(((string) $value), $selValues, true) ? ' selected="selected"' : '',
+                $this->_translateValue($value, $record));
+        }
+
+        $result .= '</select>';
+        return $result;
     }
 
     /**
@@ -413,22 +476,39 @@
      */
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
-      // We only support 'exact' matches.
-      // But you can select more than one value, which we search using the IN() statement,
-      // which should work in any ansi compatible database.
-      $searchcondition = "";
-      if (is_array($value) && count($value)>0 && $value[0]!="") // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
-      {
-        if (count($value)==1) // exactly one value
-        {
-          $searchcondition = $query->exactCondition($table.".".$this->fieldName(),$this->escapeSQL($value[0]));
+        // We only support 'exact' matches.
+        // But you can select more than one value, which we search using the IN() statement,
+        // which should work in any ansi compatible database.
+        $searchcondition = "";
+        if (is_array($value) && count($value) > 0 && $value[0] != "") { // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
+
+            if ($this->getMultipleInSimpleSearch() && count($value) == 1 && strpos($value[0], ',') !== false) {
+                // in case of multiple select in simple search, we have the selected values into a single string (csv)
+                $value = explode(',', $value[0]);
+                // "search all" option has precedence (when another options are selected together)
+                if ($value[0] == "") {
+                    return;
+                }
+            }
+
+            if (count($value) == 1 && $value[0]) { // exactly one value
+                if ($value[0] == "__NONE__") {
+                    return $query->nullCondition($table . "." . $this->fieldName(), true);
+                } else {
+                    return $query->exactCondition($table . "." . $this->fieldName(), $this->escapeSQL($value[0]));
+                }
+            } else if (count($value) > 1) { // search for more values
+                if (in_array('__NONE__', $value)) {
+                    unset($value[array_search('__NONE__', $value)]);
+                    return sprintf('(%s OR %s)',
+                        $query->nullCondition($table . "." . $this->fieldName(), true),
+                        $table . "." . $this->fieldName() . " IN ('" . implode("','", $value) . "')");
+                } else {
+                    return $table . "." . $this->fieldName() . " IN ('" . implode("','", $value) . "')";
+                }
+            }
         }
-        else // search for more values using IN()
-        {
-          $searchcondition = $table.".".$this->fieldName()." IN ('".implode("','",$value)."')";
-        }
-      }
-      return $searchcondition;
+        return $searchcondition;
     }
 
     /**
@@ -438,12 +518,12 @@
      */
     function getSearchModes()
     {
-      // exact match and substring search should be supported by any database.
-      // (the LIKE function is ANSI standard SQL, and both substring and wildcard
-      // searches can be implemented using LIKE)
-      // Possible values
-      //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
-      return array("exact");
+        // exact match and substring search should be supported by any database.
+        // (the LIKE function is ANSI standard SQL, and both substring and wildcard
+        // searches can be implemented using LIKE)
+        // Possible values
+        //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
+        return array("exact");
     }
 
     /**
@@ -454,8 +534,8 @@
      */
     function dbFieldType()
     {
-      // Fieldtype was determined in the constructor.
-      return $this->m_dbfieldtype;
+        // Fieldtype was determined in the constructor.
+        return $this->m_dbfieldtype;
     }
 
     /**
@@ -466,12 +546,11 @@
      */
     function setAutoHide($attrib, $valuearr)
     {
-      $conditions = array();
-      foreach ($valuearr as $value)
-      {
-        $conditions[] = "newvalue=='$value'";
-      }
-      $this->addOnChangeHandler("if (".implode('||', $conditions).") hideAttrib('$attrib'); else showAttrib('$attrib');");
+        $conditions = array();
+        foreach ($valuearr as $value) {
+            $conditions[] = "newvalue=='$value'";
+        }
+        $this->addOnChangeHandler("if (" . implode('||', $conditions) . ") hideAttrib('$attrib'); else showAttrib('$attrib');");
     }
 
     /**
@@ -484,7 +563,7 @@
      */
     function setSelected($selected)
     {
-      $this->m_selected = $selected;
+        $this->m_selected = $selected;
     }
 
     /**
@@ -498,7 +577,6 @@
         $this->m_autoSearch = $auto;
     }
 
-
     /**
      * Gets the selected listattribute
      *
@@ -509,7 +587,7 @@
      */
     function getSelected()
     {
-      return $this->m_selected;
+        return $this->m_selected;
     }
 
     /**
@@ -520,7 +598,7 @@
      */
     function setEmptyValue($value)
     {
-      $this->m_emptyvalue = $value;
+        $this->m_emptyvalue = $value;
     }
 
     /**
@@ -529,7 +607,7 @@
      */
     function getEmptyValue()
     {
-      return $this->m_emptyvalue;
+        return $this->m_emptyvalue;
     }
 
     /**
@@ -543,24 +621,23 @@
      */
     function parseStringValue($stringvalue)
     {
-      $values = $this->getValues();
-      foreach($values as $value)
-        if(strtolower($stringvalue) == strtolower($value))
-          return $value;
+        $values = $this->getValues();
+        foreach ($values as $value)
+            if (strtolower($stringvalue) == strtolower($value))
+                return $value;
 
-      $i=0;
-      $options = $this->getOptions();
-      foreach($options as $option)
-      {
-        if(strtolower($stringvalue) == strtolower($option))
-          return $values[$i];
+        $i = 0;
+        $options = $this->getOptions();
+        foreach ($options as $option) {
+            if (strtolower($stringvalue) == strtolower($option))
+                return $values[$i];
 
-        if(strtolower(atktext($stringvalue)) == strtolower($option))
-          return $values[$i];
-        $i++;
-      }
+            if (strtolower(atktext($stringvalue)) == strtolower($option))
+                return $values[$i];
+            $i++;
+        }
 
-      return $values[0];
+        return $values[0];
     }
 
     /**
@@ -569,7 +646,7 @@
      */
     function setWidth($width)
     {
-      $this->m_width=$width;
+        $this->m_width = $width;
     }
 
     /**
@@ -578,7 +655,7 @@
      */
     function getWidth()
     {
-      return $this->m_width;
+        return $this->m_width;
     }
 
     /**
@@ -587,19 +664,20 @@
      * @param string $option
      * @param string $value
      */
-    function addOption($option, $value="")
+    function addOption($option, $value = "")
     {
-      if ($value!=0 && empty($value)) $value = $option;
-      $currentOptions = $this->_get("options");
-      $currentOptions[] = $option;
-      $this->_set("options", $currentOptions);
+        if ($value != 0 && empty($value))
+            $value = $option;
+        $currentOptions = $this->_get("options");
+        $currentOptions[] = $option;
+        $this->_set("options", $currentOptions);
 
-      $currentValues = $this->_get("values");
-      $currentValues[] = $value;
-      $this->_set("values", $currentValues);
+        $currentValues = $this->_get("values");
+        $currentValues[] = $value;
+        $this->_set("values", $currentValues);
 
-      $this->createLookupArray($currentOptions,$currentValues);
-      return $this;
+        $this->createLookupArray($currentOptions, $currentValues);
+        return $this;
     }
 
     /**
@@ -609,18 +687,18 @@
      */
     function removeOption($option)
     {
-      $currentOptions = $this->_get("options");
-      $currentValues = $this->_get("values");
+        $currentOptions = $this->_get("options");
+        $currentValues = $this->_get("values");
 
-      $index = array_search($option, $currentOptions);
-      $value = $currentValues[$index];
+        $index = array_search($option, $currentOptions);
+        $value = $currentValues[$index];
 
-      array_splice($currentOptions, $index, 1); // remove option
-      array_splice($currentValues, $index, 1);  // remove value
+        array_splice($currentOptions, $index, 1); // remove option
+        array_splice($currentValues, $index, 1);  // remove value
 
-      $this->_set("options",$currentOptions);
-      $this->_set("values",$currentValues);
-      return $this;
+        $this->_set("options", $currentOptions);
+        $this->_set("values", $currentValues);
+        return $this;
     }
 
     /**
@@ -632,14 +710,14 @@
      */
     function setOptions($optionArray, $valueArray)
     {
-      // m_options and m_values array are still here for backwardscompatibility
-      $this->m_options = $optionArray;
-      $this->_set("options",$optionArray);
-      $this->m_values = $valueArray;
-      $this->_set("values",$valueArray);
+        // m_options and m_values array are still here for backwardscompatibility
+        $this->m_options = $optionArray;
+        $this->_set("options", $optionArray);
+        $this->m_values = $valueArray;
+        $this->_set("values", $valueArray);
 
-      $this->createLookupArray($optionArray,$valueArray);
-      return $this;
+        $this->createLookupArray($optionArray, $valueArray);
+        return $this;
     }
 
     /**
@@ -649,19 +727,19 @@
      */
     function removeValue($value)
     {
-      $currentOptions = $this->_get("options");
-      $currentValues = $this->_get("values");
+        $currentOptions = $this->_get("options");
+        $currentValues = $this->_get("values");
 
-      $v = array_search($value, $currentValues);
+        $v = array_search($value, $currentValues);
 
-      array_splice($currentOptions, $v, 1); // remove option
-      array_splice($currentValues, $v, 1);  // remove value
+        array_splice($currentOptions, $v, 1); // remove option
+        array_splice($currentValues, $v, 1);  // remove value
 
-      $this->_set("options",$currentOptions);
-      $this->_set("values",$currentValues);
-      return $this;
+        $this->_set("options", $currentOptions);
+        $this->_set("values", $currentValues);
+        return $this;
     }
 
-  }
+}
 
 ?>
