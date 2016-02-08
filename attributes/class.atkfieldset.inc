@@ -23,6 +23,10 @@
  * @package atk
  * @subpackage attributes
  */
+
+ /* AGX: new flag to make the field obligatory */
+define("AF_FIELDSET_OBLIGATORY", AF_SPECIFIC_1);
+  
 class atkFieldSet extends atkAttribute
 {
     private $m_template;
@@ -146,6 +150,16 @@ class atkFieldSet extends atkAttribute
     {
         $replacements = array();
 
+		// AGX
+		if ($this->hasFlag(AF_FIELDSET_OBLIGATORY)) {
+			$theme = &atkinstance("atk.ui.atktheme");
+			$reqimg = '<img align="top" src="' . $theme->imgPath("required_field.gif") . '" border="0"
+                   alt="' . atktext("field_obligatory") . '" title="' . atktext("field_obligatory") . '">';
+		} else {
+			$reqimg = '';
+		}
+		/* END */
+
         $fields = array_unique($this->getParser()->getFields());
         foreach ($fields as $field) {
             @list($attrName, $part) = explode('.', $field);
@@ -153,7 +167,10 @@ class atkFieldSet extends atkAttribute
 
             switch ($part) {
                 case 'label':
-                    $replacements[$attrName][$part] = $attr->getLabel($record, $mode);
+					/* AGX */
+					$more = ($attr->hasFlag(AF_OBLIGATORY)) ? $reqimg : '';
+					$replacements[$attrName][$part] = $attr->getLabel($record, $mode) . $more;
+					/* END */
                     break;
 
                 case 'field':
