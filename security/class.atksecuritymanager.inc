@@ -247,7 +247,8 @@ class atkSecurityManager
         // first check if we want to logout
         if (isset($ATK_VARS["atklogout"]) && (!isset($session["relogin"]) || $session["relogin"] != 1)) {
             $currentUser = &atkGetUser();
-            $this->notifyListeners("preLogout", $currentUser['name']);
+			// FIX refresh problem with currentUser not existing
+            $this->notifyListeners("preLogout", isset($currentUser['name']) ? $currentUser['name'] : $auth_user );
 
             // Let the authentication plugin know about logout too.
             foreach ($this->m_authentication as $auth) {
@@ -263,7 +264,7 @@ class atkSecurityManager
                         setcookie($cookiename, "", 0);
             }
 
-            $this->notifyListeners("postLogout", $currentUser['name']);
+            $this->notifyListeners("postLogout", isset($currentUser['name']) ? $currentUser['name'] : $auth_user );
 
             if ($ATK_VARS["atklogout"] > 1) {
                 header("Location: logout.php");
