@@ -359,10 +359,15 @@ function atkGetTrace($format = "html")
                         if (is_numeric($name))
                             $valArr[] = $name;
                         else {
-                            if (is_object($value))
+							/* AGX: manage non object situations */
+							if (is_object($value)) {
                                 $valArr[] = sprintf("%s=Object(%s)", $name, get_class($value));
-                            else
+							} elseif (is_array($value)) {
+								$valArr[] = sprintf("%s=Array(%s)", $name, count($value));
+							} else {
                                 $valArr[] = $name . "=" . $value;
+							}
+							/* END */
                         }
                     }
                     $stringval = "array(" . implode(", ", $valArr) . ")";
@@ -1023,10 +1028,19 @@ function atkTriggerError(&$record, &$attrib, $error, $message = '')
         $tab = $attrib[0]->m_tabs[0];
         $message = $attrib[0]->text($error);
     } else {
-        $attribName = $attrib->fieldName();
-        $label = $attrib->label($record);
-        $tab = $attrib->m_tabs[0];
-        $message = $attrib->text($error);
+		/* AGX: manage non object situations */
+		if (is_object($attrib)) {
+			$attribName = $attrib->fieldName();
+			$label = $attrib->label($record);
+			$tab = $attrib->m_tabs[0];
+			$message = $attrib->text($error);
+		} else {
+			$attribName = 'unknown';
+			$label = 'unknown';
+			$tab = 'unknown';
+			$message = 'unknown';
+		}
+		/* END */
     }
 
     triggerError($record, $attribName, $error, $message, $tab, $label);
