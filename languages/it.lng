@@ -212,7 +212,8 @@
   "list_null_value_obligatory" => "(Scegli...)",
   "load_criteria" => "Carica una ricerca salvata",
   "lock_expired" => "Gli elementi non sono più accessibili unicamente da te. Questo può avvenire per diverse cause, la più comune è che il record non è stato salvato durante un lungo periodo.",
-  "lock_info_line" => "[user_id] (ip: [user_ip]) da [lock_date]",
+  /* AGX: privacy IP address */
+  "lock_info_line" => "<b>[user_id]</b> dal [lock_date]",
   "lock_locked" => "Gli elementi selezionati sono in uso.",
   "logged_in_as" => "Utente in uso",
   "login" => "Login",
