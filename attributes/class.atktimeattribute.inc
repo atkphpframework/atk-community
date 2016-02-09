@@ -98,6 +98,10 @@ class atkTimeAttribute extends atkAttribute
     function display($record)
     {
         $value = $record[$this->fieldName()];
+		/* AGX */
+		if (!is_array($value))
+			return '';
+		/* END */
         if ($value["hours"] === "")
             return "";
         $tmp_time = sprintf("%02d:%02d", $value["hours"], $value["minutes"]);
@@ -284,7 +288,6 @@ class atkTimeAttribute extends atkAttribute
                 $tmp .= '" value="&lAarr;" class="atkDateAttribute button atkbutton">';
                 return $tmp;
             }
-            else {
             $tmp = $timeedit . "&nbsp;&nbsp;" .
                 ' <input type="button" onclick="
          $(\'' . $this->getAttributeHtmlId() . '[hours]\').selectedIndex=0;

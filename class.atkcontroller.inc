@@ -508,18 +508,28 @@ class atkController
                 $result[] = $this->getButton('cancel');
             }
         } elseif ($mode == "add") {
-            if ($node->hasFlag(NF_EDITAFTERADD) === true && $node->allowed('edit')) {
-                $result[] = $this->getButton('saveandedit', true);
-            } else {
-                if ($node->hasFlag(NF_EDITAFTERADD) === true) {
+			/* AGX: allow both flags */
+			$defaultButtonSet = false;
+			if ($node->hasFlag(NF_EDITAFTERADD)) {
+				if ($node->allowed('edit')) {
+					$result[] = $this->getButton('saveandedit', !$defaultButtonSet);
+					$defaultButtonSet = true;
+				} else {
                     atkwarning("NF_EDITAFTERADD found but no 'edit' privilege.");
                 }
-                $result[] = $this->getButton('saveandclose', true);
             }
 
-            // if action is admin, we don't show the cancelbutton or the add next button
-            if ($node->hasFlag(NF_ADDAFTERADD) && !$node->hasFlag(NF_EDITAFTERADD))
-                $result[] = $this->getButton('saveandnext', false);
+			if ($node->hasFlag(NF_ADDAFTERADD)) {
+				$result[] = $this->getButton('saveandnext', !$defaultButtonSet);
+				$defaultButtonSet = true;
+			}
+
+			if (atkLevel() > 0) {
+				$result[] = $this->getButton('saveandclose', !$defaultButtonSet);
+			} else {
+				$result[] = $this->getButton('save', !$defaultButtonSet);
+			}
+			/* :AGX */
 
             $result[] = $this->getButton('cancel');
         }

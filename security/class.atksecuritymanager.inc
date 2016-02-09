@@ -133,9 +133,6 @@ class atkSecurityManager
         // required interface;
         atkimport("atk.security.auth_interface");
 
-        //$this->addListener(atknew('atk.security.atksecuritylistener'));
-        //$this->addListener(atknew(atkconfig("security_listeners", "atk.security.atksecuritylistener")));
-
         $tmp_listeners = atkconfig("security_listeners", "atk.security.atksecuritylistener");
         if (is_array($tmp_listeners) && (count($tmp_listeners) > 0)) {
             foreach ($tmp_listeners as $listener_name) {
@@ -250,7 +247,8 @@ class atkSecurityManager
         // first check if we want to logout
         if (isset($ATK_VARS["atklogout"]) && (!isset($session["relogin"]) || $session["relogin"] != 1)) {
             $currentUser = &atkGetUser();
-            $this->notifyListeners("preLogout", $currentUser['name']);
+			// FIX refresh problem with currentUser not existing
+            $this->notifyListeners("preLogout", isset($currentUser['name']) ? $currentUser['name'] : $auth_user );
 
             // Let the authentication plugin know about logout too.
             foreach ($this->m_authentication as $auth) {
@@ -266,7 +264,7 @@ class atkSecurityManager
                         setcookie($cookiename, "", 0);
             }
 
-            $this->notifyListeners("postLogout", $currentUser['name']);
+            $this->notifyListeners("postLogout", isset($currentUser['name']) ? $currentUser['name'] : $auth_user );
 
             if ($ATK_VARS["atklogout"] > 1) {
                 header("Location: logout.php");
@@ -333,7 +331,8 @@ class atkSecurityManager
                     }
                     else {
                         $response = AUTH_MISMATCH;
-                        $this->notifyListeners("failedlogin", $auth_user);
+                        //AGX: we'll notify later
+                        //$this->notifyListeners("failedlogin", $auth_user);
                     }
                 }
 
@@ -361,41 +360,6 @@ class atkSecurityManager
                         $this->m_user['AUTH'] = $authname; // something to see wich auth scheme is used
                         if (atkconfig("enable_ssl_encryption"))
                                 $this->m_user['PASS'] = $auth_pw; // used by aktsecurerelation to decrypt an linkpass
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // for convenience, we also store the user as a global variable.
                         (is_array($this->m_user['level'])) ? $dbg = implode(",", $this->m_user['level']) : $dbg = $this->m_user['level'];
                         atkdebug("Logged in user: " . $this->m_user["name"] . " (level: " . $dbg . ")");
@@ -460,6 +424,23 @@ class atkSecurityManager
             else {
                 // Invalid session
                 $authenticated = false;
+            }
+        }
+
+        // NOTIFY SECURITY LISTENERS
+		// Output user agent data so we can use Fail2Ban to block brute force attack
+        $ip = filter_input(INPUT_SERVER, 'REMOTE_ADDR', FILTER_VALIDATE_IP);
+        $user = filter_var($auth_user, FILTER_SANITIZE_STRING);
+        $web = filter_input(INPUT_SERVER, 'HTTP_HOST', FILTER_SANITIZE_STRING);
+        $ua = filter_input(INPUT_SERVER, 'HTTP_USER_AGENT');
+        if ($response == AUTH_SUCCESS) {
+            $this->log(1, 'successfull Login "' . $user . '" from "' . $ip . '" for "' . $web . '"');
+            $this->notifyListeners("successfullLogin", $auth_user);
+        } else {
+            // Skip if Username is empty (when user press CTRL+R or reload in the browser)
+            if ($user != '') {
+                $this->log(1, 'failed Login "' . $user . '" from "' . $ip . '" for "' . $web . '" with "' . $ua . '"');
+                $this->notifyListeners("failedLogin", $auth_user);
             }
         }
 

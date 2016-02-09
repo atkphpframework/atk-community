@@ -661,7 +661,7 @@ class atkDateAttribute extends atkAttribute
 
             if (count($this->m_onchangecode) || count($this->getDependencies())) {
                 $this->renderChangeHandler($fieldprefix);
-                $str_script .= $this->getHtmlId($fieldprefix) . '_onChange(this);"';
+                $str_script .= $this->getHtmlId($fieldprefix) . '_onChange(this);';
             }
 
             /* year input box */
