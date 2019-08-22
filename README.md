@@ -1,3 +1,14 @@
+> :exclamation: :exclamation: **PROJECT HAS BEEN MOVED** :exclamation: :exclamation:
+>
+> :arrow_right: **This project has been moved to https://github.com/Sintattica/atk** :arrow_left:
+>
+> Development of the ATK Framework as a community project has stopped a very long time ago. This repository exists for historical reasons only and is thus archived. We highly discourage using this repository of the ATK Framework, **it contains known security issues!** It won't work with recent PHP versions either.
+>
+> Luckily this isn't the end of the ATK Framework. [@Sintattica](https://github.com/Sintattica/atk) took over development and is still supporting the ATK Framework as an Open Source project. We highly recommend switching to their code base.
+>
+> :exclamation: :exclamation: **PROJECT HAS BEEN MOVED** :exclamation: :exclamation:
+
+
 ATK Framework
 =============
 The ATK Framework is a special purpose PHP framework targeted at business applications. It allows you to build an application with very small amounts of code.
